@@ -1,0 +1,16 @@
+.collectionNode {
+    background-color: #eee;
+    border: 1px solid #999;
+    overflow: hidden; // to clip child nodes to this box
+  
+    .collection-content {
+      // The interior area below the top bar
+      position: relative; // So absolutely-positioned child nodes can float freely
+      width: 100%;
+      height: calc(100% - 30px); // subtract top bar height
+    }
+    .title {
+      padding: 20px 20px;
+    }
+  }
+  

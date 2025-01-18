@@ -1,0 +1,15 @@
+.imageNode {
+    // some basic styling
+    background-color: #f7f7f7;
+    overflow: auto;
+
+  
+    .content {
+      display: flex;
+      align-items: left;
+      justify-content: center;
+      height: calc(100% - 40px);
+      // above: subtract some space for the top bar
+    }
+  }
+  

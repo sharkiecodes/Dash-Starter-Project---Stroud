@@ -1,0 +1,10 @@
+.resize-handle {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  right: 0;
+  bottom: 0;
+  cursor: se-resize;
+  background-color: rgba(100, 100, 100, 0.3); //background
+  /* style: a small gray square */
+}

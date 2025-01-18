@@ -12,9 +12,13 @@ export class TopBar extends React.Component<TopBarProps> {
 
     private isPointerDown = false;
 
-    onPointerDown = (e: React.PointerEvent): void => {
-        e.stopPropagation();
-        e.preventDefault();
+    onPointerDown = (e: React.PointerEvent<HTMLDivElement>): void => {
+        // only do stopPropagation if the user is grabbing the top bar
+        if (e.currentTarget.classList.contains("topbar")) {
+            e.stopPropagation();
+            e.preventDefault();
+        // start drag, etc.
+        }
         this.isPointerDown = true;
         document.removeEventListener("pointermove", this.onPointerMove);
         document.addEventListener("pointermove", this.onPointerMove);

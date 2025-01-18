@@ -1,10 +1,17 @@
 import { computed, observable } from "mobx";
 import { Utils } from "../Utils";
+import { DEFAULT_NODE_HEIGHT, DEFAULT_NODE_WIDTH } from "../Constants";
 
-export enum StoreType {
+export enum StoreType { //expanded to add more node types
     Text, 
-    Video
+    Video,
+    Image,
+    Website,
+    RichText,
+    Collection
 }
+
+
 
 export class NodeStore {
 
@@ -19,10 +26,10 @@ export class NodeStore {
     public y: number = 0;
 
     @observable
-    public width: number = 0;
+    public width: number = DEFAULT_NODE_WIDTH;
 
     @observable
-    public height: number = 0;
+    public height: number = DEFAULT_NODE_HEIGHT;
 
     @computed
     public get transform(): string {
