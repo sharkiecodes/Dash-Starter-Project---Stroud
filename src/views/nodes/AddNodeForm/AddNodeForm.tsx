@@ -7,6 +7,7 @@ import { FieldDefinition } from "../../../stores/FieldDefinition";
 import { NodeConstructors } from "../../../stores/NodeConstructors";
 import './AddNodeForm.scss';
 import { DEFAULT_NODE_HEIGHT, DEFAULT_NODE_WIDTH } from "../../../Constants";
+import { observer } from "mobx-react";
 
 
 
@@ -18,7 +19,7 @@ interface AddNodeModalProps {
   locY: number;
 }
 
-
+@observer
 export class AddNodeModal extends React.Component<AddNodeModalProps> {
 
     @observable
@@ -63,8 +64,8 @@ export class AddNodeModal extends React.Component<AddNodeModalProps> {
       type: this.props.nodeType,
       x: this.props.locX,
       y: this.props.locY,
-      width: DEFAULT_NODE_HEIGHT,
-      height: DEFAULT_NODE_WIDTH,
+      height: DEFAULT_NODE_HEIGHT,
+      width: DEFAULT_NODE_WIDTH,
     });
 
     // Invoke the callback to add the node to the canvas

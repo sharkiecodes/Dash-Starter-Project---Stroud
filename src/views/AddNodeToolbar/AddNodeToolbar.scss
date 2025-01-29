@@ -1,0 +1,31 @@
+
+// The UI section for adding new child nodes. 
+// Placed in a corner at bottom left
+.add-child-ui {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    z-index: 10;
+
+    select {
+        margin-right: 8px;
+    }
+
+    button {
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        background: #fff;
+
+        &:hover {
+            background: #f3f3f3;
+        }
+    }
+}

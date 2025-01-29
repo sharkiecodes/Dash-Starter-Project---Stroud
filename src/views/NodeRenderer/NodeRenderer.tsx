@@ -22,23 +22,14 @@ import {
   CompositeNodeView,
   ScrapbookNodeView
 } from "../nodes";
+import { BaseNodeProps } from "../nodes/BaseNodeFrame/BaseNodeProps";
+import "./NodeRenderer.scss"
 
 
-export enum RenderMode {
-    Framed,
-    ContentOnly
-  }
-  
-interface NodeRendererProps {
-  node: NodeStore;
-  mode?: RenderMode;
-  parentCollection?: NodeCollectionStore;
-  onRemove?: () => void;
-  onFollowLink?: (node: NodeStore) => void;
-  onDragStart?: (node: NodeStore, e: PointerEvent) => void;
-  onDrag?: (node: NodeStore, dx: number, dy: number, e: PointerEvent) => void;
-  onDragEnd?: (node: NodeStore, e: PointerEvent) => void;
+interface NodeRendererProps extends BaseNodeProps{
+  className? : string
 }
+
 
 export class NodeRenderer extends React.Component<NodeRendererProps> {
   
@@ -50,118 +41,129 @@ export class NodeRenderer extends React.Component<NodeRendererProps> {
    * onClickRemove = (childStore: NodeStore) => {
       this.props.store.removeNode(childStore);
     }; */
-  private handleRemove = () => {
+  /*private handleRemove = () => {
     const { node, onRemove, parentCollection } = this.props;
     if (onRemove) {
       onRemove();
     } else if (parentCollection) {
       parentCollection.removeNode(node);
     }
-  };
+  };*/
 
-  render() {
-    const { mode = RenderMode.Framed, node, parentCollection, onFollowLink, onDrag, onDragStart, onDragEnd } = this.props;
-    
-
-    // Otherwise, do the "framed" switch:
-    switch (node.type) {
+  renderView = () =>{
+    const {store, onFollowLink, onDrag, onDragStart, onDragEnd, isContentOnly = false} = this.props;
+    const parentCollection = this.props.collection
+    switch (store.type) {
       case StoreType.Composite:
         return ( 
           <CompositeNodeView
-            store={node as CompositeNodeStore}
-            onRemove={this.handleRemove}
+            store={store as CompositeNodeStore}
             collection={parentCollection}
             onFollowLink={onFollowLink}
             onDragStart={onDragStart}
             onDrag={onDrag}
             onDragEnd={onDragEnd}
+            isContentOnly = {isContentOnly}
           />
         );
       case StoreType.Text:
         return (
           <TextNodeView
-            store={node as StaticTextNodeStore}
-            onRemove={this.handleRemove}
+            store={store as StaticTextNodeStore}
             collection={parentCollection}
             onFollowLink={onFollowLink}
             onDrag={onDrag}
             onDragEnd={onDragEnd}
             onDragStart={onDragStart}
+            isContentOnly = {isContentOnly}
           />
         );
       case StoreType.Video:
         return (
           <VideoNodeView
-            store={node as VideoNodeStore}
-            onRemove={this.handleRemove}
+            store={store as VideoNodeStore}
             collection={parentCollection}
             onFollowLink={onFollowLink}
             onDrag={onDrag}
             onDragEnd={onDragEnd}
             onDragStart={onDragStart}
+            isContentOnly = {isContentOnly}
           />
         );
       case StoreType.Image:
         return (
           <ImageNodeView
-            store={node as ImageNodeStore}
-            onRemove={this.handleRemove}
+            store={store as ImageNodeStore}
             collection={parentCollection}
             onFollowLink={onFollowLink}
             onDrag={onDrag}
             onDragEnd={onDragEnd}
             onDragStart={onDragStart}
+            isContentOnly = {isContentOnly}
           />
         );
       case StoreType.Website:
         return (
           <WebsiteNodeView
-            store={node as WebsiteNodeStore}
-            onRemove={this.handleRemove}
+            store={store as WebsiteNodeStore}
             collection={parentCollection}
             onFollowLink={onFollowLink}
             onDrag={onDrag}
             onDragEnd={onDragEnd}
             onDragStart={onDragStart}
+            isContentOnly = {isContentOnly}
           />
         );
       case StoreType.RichText:
         return (
           <RichTextNodeView
-            store={node as RichTextNodeStore}
-            onRemove={this.handleRemove}
+            store={store as RichTextNodeStore}
             collection={parentCollection}
             onFollowLink={onFollowLink}
             onDrag={onDrag}
             onDragEnd={onDragEnd}
             onDragStart={onDragStart}
+            isContentOnly = {isContentOnly}
           />
         );
       case StoreType.Collection:
         return (
           <CollectionNodeView
-            store={node as NodeCollectionStore}
-            onRemove={this.handleRemove}
+            store={store as NodeCollectionStore}
             collection={parentCollection}
             onFollowLink={onFollowLink}
             onDrag={onDrag}
             onDragEnd={onDragEnd}
             onDragStart={onDragStart}
+            isContentOnly = {isContentOnly}
           />
         );
         case StoreType.Scrapbook:
             return (
               <ScrapbookNodeView
-                store={node as ScrapbookNodeStore}
-                onRemove={this.handleRemove}
+                store={store as ScrapbookNodeStore}
                 collection={parentCollection}
                 onFollowLink={onFollowLink}
                 onDrag={onDrag}
                 onDragEnd={onDragEnd}
                 onDragStart={onDragStart}
+                isContentOnly = {isContentOnly}
               />)
       default:
         return null;
     }
+
+  }
+
+  render() {
+    const className = this.props.className;
+
+    return (
+      <div className={`view-node ${className ? ` ${className}` : ""}`}>
+        {this.renderView()}
+      </div>
+
+    )
+    
   }
 }

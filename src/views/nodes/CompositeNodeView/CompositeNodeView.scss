@@ -3,4 +3,29 @@
         overflow: auto;
 
     }
+    .composite-sub-child {
+        /**Due to the nature of a collection expanding to take up all available space in a node
+        I had to define exact width/heights for it*/
+        .collection-content{
+            position: relative;
+            background-color: salmon;
+            width: 800px; 
+            height: 200px;
+            overflow: auto; 
+        }
+
+        .layout-select {
+            /*Normally the layout select is 
+            positioned as part of the CollectionNodeView's frame, 
+            near the NodeView's remove button and top bar, etc.
+            However, because it should be rendered compositely,
+            it needs be in the flow of the nodes*/
+            position: relative; 
+            background-color: rgb(238, 225, 227);
+        
+        }      
+
+    }
+
+    
 }

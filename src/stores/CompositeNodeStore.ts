@@ -16,7 +16,7 @@ export class CompositeNodeStore extends NodeStore {
         Object.assign(this, initializer); //Assigns properties, if provided
     }
     @observable
-    public title: string | undefined; //Title of the composite node
+    public title: string = ""; //Title of the composite node
 
     /**Adds a child to the list of child nodes.
      * @param store the NodeStore to be added

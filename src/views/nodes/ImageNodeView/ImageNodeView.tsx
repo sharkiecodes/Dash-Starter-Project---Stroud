@@ -7,12 +7,12 @@ import { NodeCollectionStore } from "../../../stores";
 import { BaseNodeProps } from "../BaseNodeFrame/BaseNodeProps";
 import { BaseNodeFrame } from "../BaseNodeFrame/BaseNodeFrame";
 interface ImageNodeProps extends BaseNodeProps<ImageNodeStore>{};
-interface ImageContentProps{
-    store : ImageNodeStore
-}
+
+
 @observer
-export class ImageNodeContent extends React.Component<ImageContentProps>{
-    render(){
+export class ImageNodeView extends React.Component<ImageNodeProps> {
+
+    private renderContent = () => {
         const store = this.props.store;
         return(<>
          {/*  title or image caption */}
@@ -26,13 +26,13 @@ export class ImageNodeContent extends React.Component<ImageContentProps>{
          </>
         )
     }
-}
-@observer
-export class ImageNodeView extends React.Component<ImageNodeProps> {
 
     render() {
-        const {store, onRemove, collection, onFollowLink, onDrag, onDragEnd, onDragStart} = this.props; //destructure props
-
+        const {store, onRemove, collection, onFollowLink, onDrag, onDragEnd, onDragStart, isContentOnly} = this.props; //destructure props
+        if (isContentOnly){
+            return this.renderContent();
+        }   
+        else{    
         return (
             <div
                 className="node imageNode"  id={`node-${store.Id}`} 
@@ -44,10 +44,11 @@ export class ImageNodeView extends React.Component<ImageNodeProps> {
                 }}
             >
               <BaseNodeFrame store = {store} onRemove = {onRemove} collection = {collection} onFollowLink = {onFollowLink} onDrag = {onDrag} onDragEnd = {onDragEnd} onDragStart ={onDragStart}>
-              <ImageNodeContent store = {store}/>
+              {this.renderContent()}
               </BaseNodeFrame>
 
             </div>
         );
+      }
     }
 }

@@ -18,9 +18,13 @@
 /* A single grid cell. 
    We override any absolute positioning in the child node 
    so that the grid does not collapse from absolutely positioned children. */
-.grid-cell {
-  .node {
-    position: static;
+  .grid-cell {
+
+
+   .node {
+    position: relative !important;
     transform: none !important;
+    width: auto !important;
+    height: auto !important;
   }
 }

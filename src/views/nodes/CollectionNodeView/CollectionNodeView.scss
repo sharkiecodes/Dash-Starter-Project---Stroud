@@ -1,3 +1,16 @@
+
+.App {
+
+  .layout-select {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    background-color: rgb(238, 225, 227);
+    z-index: 10;
+  }
+}
+
+
 .collectionNode {
   background-color: #eee;
   border: 1px solid #999;
@@ -6,7 +19,7 @@
   /**MOVED OUTSIDE. ALL TS WAS ORIGINALLY NESTED under collection-node*/
 
 .layout-select {
-  position: absolute;
+  position: absolute; 
   top: 30px;
   right: 50px;
   background-color: rgb(238, 225, 227);
@@ -21,7 +34,7 @@
   /**JAN 19 ADDED CONTENTconclude*/
 ////normal from here:
 .collection-content {
-  position:relative;
+  position: relative;
   width: 100%;
   color: rgb(10, 40, 56); //changing the color as a visual indication that components inside the nested collection are nested!
   background-color: rgb(255, 244, 172);
@@ -33,3 +46,4 @@
 
  
 }
+

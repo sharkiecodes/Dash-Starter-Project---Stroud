@@ -13,34 +13,29 @@ import { BaseNodeProps } from "../BaseNodeFrame/BaseNodeProps"; //Standard props
  * the store will specifically be a StaticTextNodeStore. */
 interface TextNodeProps extends BaseNodeProps<StaticTextNodeStore>{};
 
-interface TextNodeContentProps{
-    store: StaticTextNodeStore;
-}
-    /**Renders the content for a Text Node
+/**This class models the UI for a static Text Node */
+@observer
+export class TextNodeView extends React.Component<TextNodeProps> {
+
+     /**Renders the content for a Text Node
      * @returns a JSX.Element, the specialized content
      * of the node that will be placed in a frame for viewing
      */
-@observer    
-export class TextNodeContent extends React.Component<TextNodeContentProps> {
-    
-    render() { 
+    private renderContent = () => { 
         const store = this.props.store;
         return (
         <>
         <h3 className="title">{store.title}</h3> {/**Title in Heading font */}
         <p className="paragraph">{store.text}</p> {/**Outputs stored text as paragraph*/}</>);
     }
-}
 
-
-/**This class models the UI for a static Text Node */
-@observer
-export class TextNodeView extends React.Component<TextNodeProps> {
-
-    
     /**Renders the TextNodeView */
     render() {
-        let {store, onRemove, collection, onFollowLink, onDrag, onDragEnd, onDragStart} = this.props; //destructure props for easier access
+        let {store, collection, onFollowLink, onDrag, onDragEnd, onDragStart, isContentOnly} = this.props; //destructure props for easier access
+        if (isContentOnly){
+            return this.renderContent();
+        }
+        else{
         return (
         <div className="node textNode"  id={`node-${store.Id}`} style={{
                 transform: store.transform,       // position via translate
@@ -52,12 +47,13 @@ export class TextNodeView extends React.Component<TextNodeProps> {
                 e.preventDefault(); //prevents default event behavior
             }}>
         {/* Now embed the BaseNodeFrame */}
-        <BaseNodeFrame store = {store} onRemove = {onRemove} collection = {collection} onFollowLink = {onFollowLink} onDrag = {onDrag} onDragEnd = {onDragEnd} onDragStart ={onDragStart}>
-            <TextNodeContent store = {store}/>
+        <BaseNodeFrame store = {store} collection = {collection} onFollowLink = {onFollowLink} onDrag = {onDrag} onDragEnd = {onDragEnd} onDragStart ={onDragStart}>
+            {this.renderContent()}
         </BaseNodeFrame>
             </div> 
         );
     }
+}
 }
 
 

@@ -18,7 +18,7 @@ export interface BaseNodeProps<T extends NodeStore = NodeStore> {
    * A callback for removing this node from its parent. For my purposes, typically means
    * calling 'parentCollection.removeNode(store)'
    */
-  onRemove: () => void;
+  onRemove?: () => void; //DEL
 
   /**
    * Add a reference to the parent collection so we can show a link dropdown.
@@ -65,4 +65,7 @@ export interface BaseNodeProps<T extends NodeStore = NodeStore> {
    * @param e    - The native PointerEvent for this action.
    */
   onDragEnd?: (node: NodeStore, e: PointerEvent) => void;
+
+  //Whether or not to render the BaseNodeFrame as well
+  isContentOnly?: boolean;
 }

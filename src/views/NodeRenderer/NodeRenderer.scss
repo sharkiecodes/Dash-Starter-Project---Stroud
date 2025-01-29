@@ -1,0 +1,26 @@
+//for grid view
+.view-node { 
+    &.grid-cell.highlight {
+        border: 3px dashed rgb(188, 19, 0);
+ 
+    }
+}  
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+/*
+  &.highlight::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    box-sizing: border-box;
+    border: 3px dashed rgb(188, 19, 0);
+    pointer-events: none; // so it doesn’t block clicks
+    animation: fade-out 1s forwards;
+  }*/

@@ -22,7 +22,7 @@ export class WebsiteNodeStore extends NodeStore {
     @observable
     public title: string | undefined;
   
-    @FormField({ label: "Website URL", inputType: "url", defaultValue: "https://www.wikipedia.com" })
+    @FormField({ label: "Website URL", inputType: "url", defaultValue: "https://www.wikipedia.org" })
     @observable
     public websiteURL: string | undefined;
 

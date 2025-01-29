@@ -4,7 +4,7 @@ import * as React from 'react';
 import { CompositeNodeStore } from "../../../stores/CompositeNodeStore";
 import { BaseNodeFrame } from "../BaseNodeFrame/BaseNodeFrame";
 import { BaseNodeProps } from "../BaseNodeFrame/BaseNodeProps";
-import { renderNodeContentOnly } from "../NodeContentRenderer/NodeContentRenderer";
+import { NodeRenderer } from "../../NodeRenderer/NodeRenderer";
 import "./CompositeNodeView.scss";
 
 
@@ -18,28 +18,28 @@ interface CompositeNodeProps extends BaseNodeProps<CompositeNodeStore> {
 @observer
 export class CompositeNodeView extends React.Component<CompositeNodeProps> {
 
-  renderContent  = () => {
-    //  
-    //   there is a “renderContent()” method on each node’s view,
-    //    you can call it directly.
+  private renderContent = () =>{
     const {store} = this.props;
-   
     return (
         <>
           <h3 className="title">{store.title}</h3>
           {store.childNodes.map(child => (
             <div key={child.Id} className="composite-sub-child">
-               {renderNodeContentOnly(child)}
+               <NodeRenderer store = {child} isContentOnly = {true}/>
             </div>
           ))}
         </>
       );
 
+
   }
 
   render() {
-    const { store, onRemove, collection, onFollowLink, onDrag, onDragEnd, onDragStart } = this.props;
-
+    const { store, onRemove, collection, onFollowLink, onDrag, onDragEnd, onDragStart, isContentOnly } = this.props;
+    if (isContentOnly){
+      return this.renderContent();
+    }
+    else{
     return (
       <div
         className="node compositeNode"
@@ -65,4 +65,5 @@ export class CompositeNodeView extends React.Component<CompositeNodeProps> {
       </div>
     );
   }
+}
 }

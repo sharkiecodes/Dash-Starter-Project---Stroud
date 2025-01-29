@@ -1,7 +1,6 @@
 import { observer } from "mobx-react";
 import { observable } from "mobx";
 import * as React from "react";
-import { AddNodeModal } from "../../nodes/AddNodeForm/AddNodeForm";
 import {
   NodeCollectionStore,
   NodeStore,
@@ -10,12 +9,14 @@ import {
   ScrapbookNodeStore
 } from "../../../stores";
 
-import { NodeRenderer, RenderMode } from "../../NodeRenderer/NodeRenderer";
+import { NodeRenderer } from "../../NodeRenderer/NodeRenderer";
 import "./FreeFormCanvas.scss";
 import { LinkOverlay } from "../../LinkOverlay/LinkOverlay"; // <-- arrows overlay
 import { MouseTrailView } from "../../MouseTrail/MouseTrailView";
 import { MouseTrailStore } from "../../../stores/MouseTrailStore";
 import { TOPBAR_HEIGHT } from "../../../Constants";
+import { AddNodeToolbar } from "../../AddNodeToolbar/AddNodeToolbar";
+
 
 interface FreeFormProps {
   store: NodeCollectionStore;          // The node-collection store for this freeform canvas
@@ -63,17 +64,11 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
    */
     private draggingNode: NodeStore | null = null;
 
-  @observable
-  private newNodeType: StoreType = StoreType.Text; // The node type the user selects when creating a new child, default to text
   
   /*Represents the target node for dragging-and-dropping*/
   @observable
   private dropTargetNode: NodeStore | null = null;   
 
-  /*Boolean representing whether or not
-  to show the Add Node form. Defaults to false because it should not be open right away.*/
-  @observable
-  private showAddModal: boolean = false; 
 
 
    /**
@@ -150,8 +145,6 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
         node.y = y - store.panY;
       }
     }
-     
-  
     
   };
 
@@ -249,13 +242,16 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
    */
   private mergeNodes(dragged: NodeStore, target: NodeStore, useComposite: boolean): void {
     const parentCollection = this.props.store;
+    //if (dragged.type = StoreType.Info){
+      //dragged as Info .field
+    //}
 
     if (useComposite) {
       // Create a CompositeNode instead of a nested NodeCollection
       const composite = new CompositeNodeStore({
         // position, width, etc. 
         type: StoreType.Composite,
-        title: "composite node",
+        title: "", //or "Composite Node", but I think it looks cleaner without a title
         childNodes: [dragged, target],
         x: target.x,
         y: target.y,
@@ -330,7 +326,7 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
       y: target.y,
       width: target.width,
       height: target.height,
-      title: "Merged Collection"
+      title: "Merged Collection (resize to view)"
     });
 
     // c) Add both nodes inside that collection
@@ -348,10 +344,6 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
     parentCollection.addNode(newCollection);
   }
 
-
-  removeFocus = () =>{
-  this.isPointerDown = false;
-  }
   // ---------------------------
   // Mouse/Pointer Handlers
   // ---------------------------
@@ -392,52 +384,6 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
     document.removeEventListener("pointerup", this.onPointerUp);
   };
 
-  // ---------------------------
-  // Create/Remove Child Nodes
-  // ---------------------------
-  onChangeType = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    // The <select> sets which node type we create
-    this.newNodeType = Number(e.target.value);
-    this.isPointerDown = false; 
-    /**Necessary to 
-    prevent the canvas from panning. Otherwise, it interprets the selection of a different node type
-    as the mouse continuously being down / pressing or highlighting that box.  */
-  };
-
-  /**ADDED JAN27 */
-  // This is called after the user fills in the form and clicks "Create"
-  handleAddNode = (newNode: NodeStore) => {
-    // Optionally set position relative to the current pan, 
-    // so it appears in a “nice place” on the canvas
-    newNode.x = 100 - this.props.store.panX;
-    newNode.y = 100 - this.props.store.panY;
-
-    // Actually add the node to the store
-    this.props.store.addNode(newNode);
-
-    // Close the modal
-    this.showAddModal = false;
-  };
-
-  // This is called if the user cancels the form
-  handleCancelAdd = () => {
-    this.showAddModal = false;
-  };
-
-  /**CONCLUDE JAN27 */
-
-  onClickAddNode = (e: React.MouseEvent<HTMLButtonElement>) => {
-    this.showAddModal = true;
-    return; //COMEBACK
-
-    }
-  ;
-
-  onClickRemove = (childStore: NodeStore) => {
-    this.props.store.removeNode(childStore);
-  };
-
-  
 
   // ---------------------------
   // Render
@@ -446,20 +392,6 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
     const { store, mouseTrailStore } = this.props;
 
 
-    // Example approach: place the new node somewhere in the top-left quadrant
-    let randX = Math.random() * (store.width / 2);
-    let randY = Math.random() * (store.height / 2);
-
-
-    // But we must also account for panning (store.x, store.y).
-    // If your store.x / store.y is used as a "translate" in CSS,
-    // subtract them from localX, localY:
-    randX = randX - this.props.store.panX; //USED TO SAY  STORE.X
-    randY = randY - this.props.store.panY;
-    /**Adding at an adjusted (x,y) is better because
-     * adding it an arbitrary x,y even if it's upper left corner,
-     * could mean that you could pan away and not find it
-     */
     return (
       <div className="freeformcanvas-container" onPointerDown={this.onPointerDown} ref={this.containerRef}>
         {/* The "canvas" gets moved around by pointer events */}
@@ -479,10 +411,9 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
       }
     >
       <NodeRenderer
-        node={nodeStore}
-        mode = {RenderMode.Framed}
-        parentCollection={store}
-        onRemove={() => this.onClickRemove(nodeStore)}
+        store={nodeStore}
+        isContentOnly = {false}
+        collection={store}
         onFollowLink={this.handleFollowLink}
         onDrag = {this.handleNodeDrag}
         onDragStart = {this.handleNodeDragStart}
@@ -501,27 +432,8 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
         {mouseTrailStore && <MouseTrailView store={mouseTrailStore} />}
 
         {/* UI to select a node type and add a new node */}
-        <div className="add-child-ui">
-          <select value={this.newNodeType} onChange={this.onChangeType} onPointerDown={this.removeFocus}>
-            <option value={StoreType.Text}>Text</option>
-            <option value={StoreType.Video}>Video</option>
-            <option value={StoreType.Image}>Image</option>
-            <option value={StoreType.Website}>Website</option>
-            <option value={StoreType.RichText}>RichText</option>
-            <option value={StoreType.Collection}>Collection</option>
-            <option value={StoreType.Scrapbook}>Scrapbook</option>
-          </select>
-          <button onClick={this.onClickAddNode}>Add Child Node</button>
-        </div>
-             {/* Show AddNodeModal if needed */}
-             {this.showAddModal && (
-          <AddNodeModal
-            nodeType={this.newNodeType}
-            onAdd={this.handleAddNode}
-            onCancel={this.handleCancelAdd}
-            locX = {randX}
-            locY = {randY}
-          />)}
+        <AddNodeToolbar store = {store}/>
+       
         {/* Button to trigger "grid-like" layout */}
         <div className="arrange-grid-ui">
           <button onClick={this.arrangeInGrid}>

@@ -9,13 +9,11 @@ import { BaseNodeProps } from "../BaseNodeFrame/BaseNodeProps";
 
 interface RichTextNodeProps extends BaseNodeProps<RichTextNodeStore>{};
 
-interface RichTextContentProps {
-    store : RichTextNodeStore
-}
 
 @observer
-export class RichTextNodeContent extends React.Component<RichTextContentProps>{
+export class RichTextNodeView extends React.Component<RichTextNodeProps> {
 
+    
     onEditorChange = (value: string) => {
         this.props.store.content = value;
         
@@ -31,41 +29,40 @@ export class RichTextNodeContent extends React.Component<RichTextContentProps>{
         
         }
     
-render(){
-    const store = this.props.store;
-    const uniqueQuillId = "quill-bounds-" + store.Id;
-    return(
-        <>
-    <h3 className="title">{store.title}</h3>
-    {/**onClick={(e: React.MouseEvent) => {
-                         // Stop propagation so that Quill's scroll doesn't bubble
-                         e.stopPropagation();} */}
-                            <div
-                                className="quill-container"
-                                id={uniqueQuillId}
-                                onPointerDown={this.onPointerDown}
-                            >
-                                <ReactQuill
-                                    value={store.content}
-                                    onChange={this.onEditorChange}
-                                    theme="snow"
-                                    style={{ height: "100%" }}
-                                    //bounds={".quill-container"}
-                                    bounds={"#" + uniqueQuillId} 
-                                    
-                                />
-                            </div>
-            </>
-    )
-}
-}
-
-@observer
-export class RichTextNodeView extends React.Component<RichTextNodeProps> {
-
+    private renderContent = () => {
+        const store = this.props.store;
+        const uniqueQuillId = "quill-bounds-" + store.Id;
+        return(
+            <>
+        <h3 className="title">{store.title}</h3>
+        {/**onClick={(e: React.MouseEvent) => {
+                             // Stop propagation so that Quill's scroll doesn't bubble
+                            e.stopPropagation();} */}
+                                <div
+                                    className="quill-container"
+                                    id={uniqueQuillId}
+                                    onPointerDown={this.onPointerDown}
+                                >
+                                    <ReactQuill
+                                        value={store.content}
+                                        onChange={this.onEditorChange}
+                                        theme="snow"
+                                        style={{ height: "100%" }}
+                                        //bounds={".quill-container"}
+                                        bounds={"#" + uniqueQuillId} 
+                                        
+                                    />
+                                </div>
+                </>
+        )
+    }
 
     render() {
-        const {store, onRemove, collection, onFollowLink, onDrag, onDragEnd, onDragStart} = this.props;
+        const {store, onRemove, collection, onFollowLink, onDrag, onDragEnd, onDragStart, isContentOnly} = this.props;
+        if (isContentOnly){
+            return this.renderContent();
+        }
+        else{    
         return (
             <div
                 className="node richtext-node"  id={`node-${store.Id}`} 
@@ -77,13 +74,14 @@ export class RichTextNodeView extends React.Component<RichTextNodeProps> {
                 }}
             >
                <BaseNodeFrame store = {store} onRemove = {onRemove} collection={collection} onFollowLink={onFollowLink} onDrag = {onDrag} onDragEnd = {onDragEnd} onDragStart ={onDragStart}>
-                <RichTextNodeContent store = {store}/>
+                {this.renderContent()}
                
                </BaseNodeFrame>
                
         
             </div>
         );
+        }
     }
 }
 /**note to self, for my own reference:

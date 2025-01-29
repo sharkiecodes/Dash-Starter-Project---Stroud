@@ -10,15 +10,14 @@ import { GridCanvas } from "../../CanvasViews/GridView/GridCanvas";
 import { TreeCanvas } from "../../CanvasViews/TreeView/TreeCanvas"; 
 import { BaseNodeProps } from "../BaseNodeFrame/BaseNodeProps";
 import { BaseNodeFrame } from "../BaseNodeFrame/BaseNodeFrame";
+import { MouseTrailStore } from "../../../stores/MouseTrailStore";
 
 interface CollectionNodeProps extends BaseNodeProps<NodeCollectionStore>{}
 
-interface CollectionNodeContentProps{
-    store: NodeCollectionStore
-}
 
 @observer
-export class CollectionNodeContent extends React.Component<CollectionNodeContentProps>{
+export class CollectionNodeView extends React.Component<CollectionNodeProps> {
+
     onChangeLayoutMode = (e: React.ChangeEvent<HTMLSelectElement>) => {
         // Switch the store’s layoutMode property
         this.props.store.layoutMode = e.target.value as LayoutMode;
@@ -27,55 +26,50 @@ export class CollectionNodeContent extends React.Component<CollectionNodeContent
     interceptClick = (e: React.PointerEvent) => {
         e.stopPropagation();
     }
-
-    render(){
-        {
-            const store = this.props.store;
-            return (
-            <>
-                {/* Toggle button to switch between freeform and grid */}
-                {/* SELECT to choose which layout mode */}
-                {/* Layout Mode Toggle */}
-                 <div className="layout-select">
-                   <label>
-                       View Mode: 
-                       <select value={store.layoutMode} onChange={this.onChangeLayoutMode} onPointerDown={this.interceptClick}>
-                       {/* Use enum values as string: LayoutMode.Freeform => "freeform", LayoutMode.Grid => "grid" */}
-                       <option value={LayoutMode.Freeform}>Freeform</option>
-                       <option value={LayoutMode.Grid}>Grid</option>
-                       <option value={LayoutMode.Tree}>Tree</option>
-                       </select>
-                   </label>
-                   </div>
-               <h3 className="title">{store.title}</h3>    
-               <br></br>
-               {/* Now render the *child* nodes in their own freeform canvas. */}
-               <div className="collection-content">
-                   {/* Now conditionally render the layout */}
-                   {/* Conditionally render the chosen layout */}
-                   {store.layoutMode === LayoutMode.Freeform && (
-                       <FreeFormCanvas store={store} />
-                     )}
-                     {store.layoutMode === LayoutMode.Grid && (
-                       <GridCanvas store={store} />
-                     )}
-                     {store.layoutMode === LayoutMode.Tree && (
-                       <TreeCanvas store={store}/>
-                     )} </div>
-                     </> )
-                     }
-
+    renderContent = () => {
+    const store = this.props.store;
+    return (<>
+        {/* Toggle button to switch between freeform and grid */}
+        {/* SELECT to choose which layout mode */}
+        {/* Layout Mode Toggle */}
+         <div className="layout-select">
+           <label>
+               View Mode: 
+               <select value={store.layoutMode} onChange={this.onChangeLayoutMode} onPointerDown={this.interceptClick}>
+               {/* Use enum values as string: LayoutMode.Freeform => "freeform", LayoutMode.Grid => "grid" */}
+               <option value={LayoutMode.Freeform}>Freeform</option>
+               <option value={LayoutMode.Grid}>Grid</option>
+               <option value={LayoutMode.Tree}>Tree</option>
+               </select>
+           </label>
+           </div>
+       <h3 className="title">{store.title}</h3>    
+       <br></br>
+       {/* Now render the *child* nodes in their own freeform canvas. */}
+       <div className="collection-content">
+           {/* Now conditionally render the layout */}
+           {/* Conditionally render the chosen layout */}
+           {store.layoutMode === LayoutMode.Freeform && (
+               <FreeFormCanvas store={store} mouseTrailStore={new MouseTrailStore()} /> //added mouse trail store jan29
+             )}
+             {store.layoutMode === LayoutMode.Grid && (
+               <GridCanvas store={store} />
+             )}
+             {store.layoutMode === LayoutMode.Tree && (
+               <TreeCanvas store={store}/>
+             )} </div>
+              </>)
     }
-}
-
-@observer
-export class CollectionNodeView extends React.Component<CollectionNodeProps> {
-
-
+            
 
     render() {
-        const {store, onRemove, collection, onFollowLink, onDrag, onDragEnd, onDragStart} = this.props;
-        return (
+        const {store, collection, onFollowLink, onDrag, onDragEnd, onDragStart, isContentOnly} = this.props;
+
+            if (isContentOnly){
+                return this.renderContent();
+            }
+            else{
+                return(
             <div 
                 className="node collectionNode" id={`node-${store.Id}`} 
                 style={{ transform: store.transform,
@@ -84,12 +78,12 @@ export class CollectionNodeView extends React.Component<CollectionNodeProps> {
                     position: "absolute"}}
             >
                 {/* The top bar allows dragging the entire sub-collection node. */}
-               <BaseNodeFrame store = {store} onRemove = {onRemove} collection = {collection} onFollowLink = {onFollowLink} onDrag = {onDrag} onDragEnd = {onDragEnd} onDragStart ={onDragStart}>
+               <BaseNodeFrame store = {store} isContentOnly = {false} collection = {collection} onFollowLink = {onFollowLink} onDrag = {onDrag} onDragEnd = {onDragEnd} onDragStart ={onDragStart}>
     
-               <CollectionNodeContent store = {store} />
+               {this.renderContent()}
               
             </BaseNodeFrame>
             </div>
         );
-    }
+    }}
 }

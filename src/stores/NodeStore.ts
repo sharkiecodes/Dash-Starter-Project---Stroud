@@ -57,6 +57,9 @@ export class NodeStore {
     public x: number = 0;
 
     @observable
+    public title : string | undefined = ""
+
+    @observable
     public y: number = 0;
 
     @observable

@@ -63,7 +63,7 @@ export class LinkPanel extends React.Component<LinkPanelProps> {
         <ul>
           {node.links.map((linkedNode) => (
             <li key={linkedNode.Id}>
-               {linkedNode.type === null ? "Null" : StoreType[linkedNode.type]} - {(linkedNode as any).title || linkedNode.Id}
+               {linkedNode.type === null ? "Null" : StoreType[linkedNode.type]} - {linkedNode.title || "Untitled Node " + linkedNode.Id.at(0) + linkedNode.Id.at(1) + linkedNode.Id.at(2)}
               <button onClick={() => this.handleFollowLink(linkedNode)}>
                 Follow
               </button>
@@ -77,7 +77,9 @@ export class LinkPanel extends React.Component<LinkPanelProps> {
           <option value="">-- Link to another node --</option>
           {otherNodes.map((n) => (
             <option key={n.Id} value={n.Id}>
-              {(n as any).title || n.Id}
+              {n.title || "Untitled Node " + n.Id.at(0) + n.Id.at(1) + n.Id.at(2)} 
+              {/*Unnamed node with random shortened 3digit id
+              the OR operator will use the right-hand side whenever the left-hand side is null or ""*/}
             </option>
           ))}
         </select>

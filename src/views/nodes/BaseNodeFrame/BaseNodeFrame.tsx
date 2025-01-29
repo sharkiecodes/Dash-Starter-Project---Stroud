@@ -30,14 +30,15 @@ interface BaseNodeFrameProps extends BaseNodeProps<NodeStore> {
  */
 export class BaseNodeFrame extends React.Component<BaseNodeFrameProps> {
   render() {
-    const { store, onRemove, children, collection, onFollowLink, onDragStart, onDrag, onDragEnd} = this.props;
+    const { store, children, collection, onFollowLink, onDragStart, onDrag, onDragEnd} = this.props;
 
     return (
       <>
         <TopBar store={store} onDragStart={onDragStart}
                   onDrag={onDrag}
                   onDragEnd={onDragEnd} />
-        <RemoveButton onClick={onRemove} />
+        <RemoveButton collection={collection} node = {store}/>
+        
         {collection && (
           <LinkPanel node={store} collection={collection} onFollowLink={onFollowLink}/>
         )}

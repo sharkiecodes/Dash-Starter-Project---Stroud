@@ -8,13 +8,10 @@ import { BaseNodeFrame } from "../BaseNodeFrame/BaseNodeFrame";
 
 interface WebsiteNodeProps extends BaseNodeProps<WebsiteNodeStore>{}
 
-interface WebsiteNodeContentProps{
-    store: WebsiteNodeStore
-}
 
 @observer
-export class WebsiteNodeContent extends React.Component<WebsiteNodeContentProps>{
-    public render(){
+export class WebsiteNodeView extends React.Component<WebsiteNodeProps> {
+    private renderContent = () => {
         const store = this.props.store;
         return(
             <>
@@ -29,18 +26,16 @@ export class WebsiteNodeContent extends React.Component<WebsiteNodeContentProps>
               </>
         )
     }
-}
-
-@observer
-export class WebsiteNodeView extends React.Component<WebsiteNodeProps> {
 
     render() {
         //destructures this.props
         // fetches props for easy reference later on
-        const { store, onRemove, collection, onFollowLink, onDrag, onDragEnd, onDragStart} = this.props;
-
+        const { store, collection, onFollowLink, onDrag, onDragEnd, onDragStart, isContentOnly} = this.props;
+        if (isContentOnly){
+            return this.renderContent();
+        }
+        else{
         return (
-    
             <div
                 className="node websiteNode"  id={`node-${store.Id}`} 
                 style={{
@@ -50,12 +45,12 @@ export class WebsiteNodeView extends React.Component<WebsiteNodeProps> {
                     position: "absolute" // So that it doesn't push other components around
                 }}
             >
-               
-                <BaseNodeFrame store = {store} onRemove = {onRemove} collection = {collection} onFollowLink = {onFollowLink} onDrag = {onDrag} onDragEnd = {onDragEnd} onDragStart ={onDragStart}>
-                    <WebsiteNodeContent store = {store}/>
+                <BaseNodeFrame store = {store} collection = {collection} onFollowLink = {onFollowLink} onDrag = {onDrag} onDragEnd = {onDragEnd} onDragStart ={onDragStart}>
+                    {this.renderContent()}
                 </BaseNodeFrame>
             </div>
-        );
+            );
+        }
     }
 }
 

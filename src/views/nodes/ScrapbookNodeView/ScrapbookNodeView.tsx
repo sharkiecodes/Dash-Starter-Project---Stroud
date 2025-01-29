@@ -4,7 +4,7 @@ import * as React from "react";
 import { ScrapbookNodeStore } from "../../../stores/ScrapbookNodeStore";
 import { BaseNodeFrame } from "../BaseNodeFrame/BaseNodeFrame";
 import { BaseNodeProps } from "../BaseNodeFrame/BaseNodeProps";
-import { renderNodeContentOnly } from "../NodeContentRenderer/NodeContentRenderer";
+import { NodeRenderer } from "../../NodeRenderer/NodeRenderer";
 import "./ScrapbookNodeView.scss";
 
 @observer
@@ -25,15 +25,15 @@ export class ScrapbookNodeView extends React.Component<BaseNodeProps<ScrapbookNo
         <div className="scrapbook-layout">
           <div className="scrapbook-website-slot">
             {websiteChild 
-              ? renderNodeContentOnly(websiteChild)
-              : <div className="placeholder">Drop a Website here</div>
+              ? <NodeRenderer store = {websiteChild} isContentOnly = {true}/>
+              : <div className="placeholder">Drag Website to top bar to add</div> //drop a website here
             }
           </div>
 
           <div className="scrapbook-video-slot">
             {videoChild
-              ? renderNodeContentOnly(videoChild)
-              : <div className="placeholder">Drop a Video here</div>
+              ? <NodeRenderer store = {videoChild} isContentOnly = {true}/>
+              : <div className="placeholder">Drag Video to top bar to add</div> //drop a video here
             }
           </div>
         </div>
@@ -44,14 +44,17 @@ export class ScrapbookNodeView extends React.Component<BaseNodeProps<ScrapbookNo
   render() {
     const { 
       store, 
-      onRemove, 
       collection, 
       onFollowLink, 
       onDrag, 
       onDragEnd, 
-      onDragStart 
+      onDragStart,
+      isContentOnly
     } = this.props;
-
+    if(isContentOnly){
+      return this.renderContent();
+    }
+    else{
     return (
       <div
         className="node scrapbookNode"
@@ -65,7 +68,6 @@ export class ScrapbookNodeView extends React.Component<BaseNodeProps<ScrapbookNo
       >
         <BaseNodeFrame
           store={store}
-          onRemove={onRemove}
           collection={collection}
           onFollowLink={onFollowLink}
           onDrag={onDrag}
@@ -77,4 +79,5 @@ export class ScrapbookNodeView extends React.Component<BaseNodeProps<ScrapbookNo
       </div>
     );
   }
+}
 }
