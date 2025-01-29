@@ -1,15 +1,19 @@
 .imageNode {
-    // some basic styling
-    background-color: #f7f7f7;
-    overflow: auto;
-
+    // override background-color
+    background-color: #cfffdb;
   
     .content {
-      display: flex;
-      align-items: left;
-      justify-content: center;
-      height: calc(100% - 40px);
-      // above: subtract some space for the top bar
+      display: flex; /**Allows image to be compressed or "squeezed" horizontally when the box is too small*/
+      /**I opted for the image to be compressed and be distorted to meet
+      the size of the node container when the node container is too small, but this is purely a stylistic preference.
+      An alternative implementation could be making the image have a fixed, constant aspect ratio that it maintains
+      regardless of the node container. Simply switch display: absolute to achieve this alternative.*/ 
+
+      justify-content: left;
+      height: 100% //sets a fixed height for the image; image takes up the full space of its div container
     }
+  
+
+
   }
   

@@ -1,0 +1,58 @@
+.freeformcanvas-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    .freeformcanvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+}
+
+// Each child node is wrapped in a container so we can
+// place the remove button in a consistent spot.
+.collection-child-wrapper {
+    position: absolute;
+    &.hovered-drop-target {
+        .node{
+        outline: 3px dashed rgba(255, 188, 2, 0.7);
+        //highlighting when it is being hovered over
+        }
+      }
+}
+
+
+// The UI section for adding new child nodes. 
+// Placed in a corner at bottom left
+.add-child-ui {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    z-index: 10;
+
+    select {
+        margin-right: 8px;
+    }
+
+    button {
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        background: #fff;
+
+        &:hover {
+            background: #f3f3f3;
+        }
+    }
+}

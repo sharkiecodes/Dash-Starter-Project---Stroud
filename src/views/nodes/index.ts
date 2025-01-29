@@ -5,4 +5,6 @@ export * from './ResizeHandle';
 export * from './WebsiteNodeView';
 export * from './RichTextNodeView';
 export * from './ImageNodeView';
-export * from './GroupNodeView';
+export * from './CompositeNodeView'
+export * from './CollectionNodeView';
+export * from './ScrapbookNodeView';

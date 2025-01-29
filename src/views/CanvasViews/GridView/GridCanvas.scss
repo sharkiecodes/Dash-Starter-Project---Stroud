@@ -1,0 +1,26 @@
+/* src/views/CanvasViews/GridView/GridCanvas.scss */
+.grid-canvas-container {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: #f9f9f9;
+}
+/* The primary container that forms the grid layout. */
+.grid-canvas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  //grid-template-rows: repeat(auto-fill, minmax(250px, 1fr));   //this helps a lil bit but not really 
+  grid-gap: 1rem;
+  padding: 1rem;
+}
+
+/* Each grid cell forcibly overrides absolute positioning in node views. */
+/* A single grid cell. 
+   We override any absolute positioning in the child node 
+   so that the grid does not collapse from absolutely positioned children. */
+.grid-cell {
+  .node {
+    position: static;
+    transform: none !important;
+  }
+}

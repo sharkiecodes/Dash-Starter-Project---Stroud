@@ -1,0 +1,22 @@
+/* RemoveButton.scss */
+
+.remove-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+  
+    background: #f66;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 8px;
+    cursor: pointer; //establishes what the cursor looks like when mousing over the button
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+  
+    &:hover { 
+      opacity: 1.0; //when the user is hovering over the button, change the opacity
+    }
+  }
+  

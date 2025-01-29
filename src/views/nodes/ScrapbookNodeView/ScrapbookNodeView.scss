@@ -1,0 +1,32 @@
+/* ScrapbookNodeView.scss */
+.scrapbookNode {
+    border: 2px dashed #666;
+    background-color: #fafafa;
+  }
+  
+  .scrapbook-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  
+  .scrapbook-layout {
+    display: flex;
+    flex: 1; 
+    gap: 10px;
+  }
+  
+  .scrapbook-website-slot, .scrapbook-video-slot {
+    flex: 1;
+    border: 1px solid #ccc;
+    padding: 5px;
+    overflow: auto;
+  }
+  
+  .placeholder {
+    color: #aaa;
+    font-style: italic;
+    text-align: center;
+    margin-top: 40px;
+  }
+  

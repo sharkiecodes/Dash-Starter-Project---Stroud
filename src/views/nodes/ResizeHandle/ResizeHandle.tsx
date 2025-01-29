@@ -15,8 +15,11 @@ export class ResizeHandle extends React.Component<ResizeHandleProps> {
 
 
     onPointerDown = (e: React.PointerEvent): void => {
-        e.stopPropagation();
-        e.preventDefault();
+
+        //if (e.currentTarget.classList.contains("resize-handle")) {
+            e.stopPropagation();
+            e.preventDefault();
+        //}
         this.isPointerDown = true;
         
         /**Similar event listener logic as dragging the freeform canvas, where clicking adds event listeners for 

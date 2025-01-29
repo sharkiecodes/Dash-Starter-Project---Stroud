@@ -1,0 +1,67 @@
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  
+    /* A semi-transparent black overlay */
+    background-color: rgba(0, 0, 0, 0.4);
+  
+    /* So it appears above canvas */
+    z-index: 999;
+  
+    /* Center children within the backdrop */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* The white box in the center */
+  .modal-content {
+    background: #fff;
+    padding: 16px 24px;
+    border-radius: 4px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .modal-content h3 {
+    margin-top: 0;
+  }
+  
+  .form-row {
+    margin-bottom: 12px;
+  
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+  
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      width: 100%;
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 2px;
+    }
+  
+    textarea {
+      min-height: 60px;
+      resize: vertical;
+    }
+  }
+  
+  .button-row {
+    text-align: right;
+  
+    button {
+      cursor: pointer;
+      margin-left: 10px;
+      padding: 6px 12px;
+    }
+  }

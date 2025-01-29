@@ -3,7 +3,6 @@
     background-color: #f9f9ff;
     overflow: hidden !important; //it's still enabling scrolling for the broken link tooltip tho?
 
-
 }
   
 /* Prevent Quill link tooltip from wrapping */
@@ -11,6 +10,9 @@
 .ql-snow .ql-tooltip {
 
   white-space: nowrap !important;
+ // top: 0;
+ // left: 0;
+  //position: relative; //ADDED JAN19 RISKY
 
 }
 

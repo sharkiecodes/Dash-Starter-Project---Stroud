@@ -1,0 +1,29 @@
+.mouse-trail-overlay {
+    pointer-events: none; /*Let pointer events pass; the mouse trail is never the intended target for a click*/
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999; /*Super high z-index to ensure it is truly on top of everything*/
+  }
+  .mouse-trail-point {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(208, 253, 255, 0.6);
+  
+    /* 1-second fade animation */
+    animation: fade-out 1s forwards;
+  }
+  //Animate a fade-out
+  @keyframes fade-out {
+    from {
+      opacity: 1;   /* start fully visible */
+    }
+    to {
+      opacity: 0;   /* end fully transparent */
+    }
+  }
+  

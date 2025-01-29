@@ -1,0 +1,38 @@
+/* LinkPanel.scss */
+.links-panel {
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    padding: 6px;
+    margin: 8px;
+    font-size: 0.9em;
+  
+    h4 {
+      margin-top: 0;
+      margin-bottom: 6px;
+    }
+  
+    ul {
+      padding-left: 18px;
+      margin-top: 4px;
+      margin-bottom: 4px;
+    }
+  
+    li {
+      margin-bottom: 4px;
+    }
+  
+    button {
+      margin-left: 6px;
+      cursor: pointer;
+      padding: 3px 8px;
+      border-radius: 3px;
+      border: 1px solid #ccc;
+      background: #fff;
+  
+      &:hover {
+        background: #f3f3f3;
+      }
+    }
+  }
+  

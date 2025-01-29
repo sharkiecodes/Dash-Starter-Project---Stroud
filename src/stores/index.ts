@@ -5,4 +5,5 @@ export * from './VideoNodeStore';
 export * from './WebsiteNodeStore';
 export * from './RichTextNodeStore';
 export * from './ImageNodeStore';
-export * from './GroupNodeStore';
+export * from './CompositeNodeStore'
+export * from './ScrapbookNodeStore'

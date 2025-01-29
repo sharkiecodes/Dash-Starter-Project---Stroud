@@ -7,4 +7,6 @@
   cursor: se-resize;
   background-color: rgba(100, 100, 100, 0.3); //background
   /* style: a small gray square */
+  z-index: 10; /*z-index affects which UI components appear on top of the other. I set z-index to be high because
+  I want the resize handle to always be visible and appear above other components, ex. the scrollbar*/
 }
