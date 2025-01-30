@@ -81,7 +81,7 @@ export class RichTextNodeView extends React.Component<RichTextNodeProps> {
         }
     }
 }
-/**note to self, for my own reference:
+/**Quill Styling notes for reference:
  * When you specify a CSS selector like .quill-container, Quill will look for the first matching element in the document (depending on how it resolves that selector). 
  * The link tooltip/popover is then positioned relative to that first container. 
  * As soon as you have two .quill-container elements, Quill might:
