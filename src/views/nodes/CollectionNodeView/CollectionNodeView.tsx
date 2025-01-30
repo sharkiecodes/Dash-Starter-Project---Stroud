@@ -4,8 +4,7 @@ import { NodeCollectionStore, MouseTrailStore } from "../../../stores";
 import { FreeFormCanvas } from "../../CanvasViews/FreeFormCanvas/FreeFormCanvas";
 import { LayoutMode } from "../../../stores/NodeCollectionStore";
 import "./../NodeView.scss";
-import "./CollectionNodeView.scss";
-/**Import after NodeView to ensure CollectionNodeView's scss stylings take precedence*/
+import "./CollectionNodeView.scss"; //Import scss after NodeView to ensure CollectionNodeView's scss stylings take precedence
 import { GridCanvas } from "../../CanvasViews/GridView/GridCanvas";
 import { TreeCanvas } from "../../CanvasViews/TreeView/TreeCanvas/TreeCanvas"; 
 import { BaseNodeProps } from "../BaseNodeFrame/BaseNodeProps";
@@ -14,7 +13,7 @@ import { AddNodeToolbar } from "../../AddNodeToolbar/AddNodeToolbar";
 
 interface CollectionNodeProps extends BaseNodeProps<NodeCollectionStore>{}
 
-
+/**Represents a collection of nodes */
 @observer
 export class CollectionNodeView extends React.Component<CollectionNodeProps> {
 

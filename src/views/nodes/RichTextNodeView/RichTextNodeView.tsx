@@ -58,7 +58,7 @@ export class RichTextNodeView extends React.Component<RichTextNodeProps> {
     }
 
     render() {
-        const {store, onRemove, collection, onFollowLink, onDrag, onDragEnd, onDragStart, isContentOnly} = this.props;
+        const {store, collection, onFollowLink, onDrag, onDragEnd, onDragStart, isContentOnly} = this.props;
         if (isContentOnly){
             return this.renderContent();
         }
@@ -73,7 +73,7 @@ export class RichTextNodeView extends React.Component<RichTextNodeProps> {
                     position: "absolute"
                 }}
             >
-               <BaseNodeFrame store = {store} onRemove = {onRemove} collection={collection} onFollowLink={onFollowLink} onDrag = {onDrag} onDragEnd = {onDragEnd} onDragStart ={onDragStart}>
+               <BaseNodeFrame store = {store} collection={collection} onFollowLink={onFollowLink} onDrag = {onDrag} onDragEnd = {onDragEnd} onDragStart ={onDragStart}>
                 {this.renderContent()}
                
                </BaseNodeFrame>

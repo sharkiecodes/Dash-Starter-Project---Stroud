@@ -6,7 +6,7 @@ import "./MouseTrailView.scss";
 interface MouseTrailViewProps {
   store: MouseTrailStore;
 }
-
+/**Establishes the view for a mouse trail */
 @observer
 export class MouseTrailView extends React.Component<MouseTrailViewProps> {
   render() {

@@ -1,7 +1,6 @@
 // NodeRendererClass.tsx
 import * as React from "react";
 import {
-  NodeStore,
   StoreType,
   StaticTextNodeStore,
   VideoNodeStore,
@@ -30,26 +29,10 @@ interface NodeRendererProps extends BaseNodeProps{
   className? : string
 }
 
-
+/** A helper class so we don’t clutter `render()`. */
 export class NodeRenderer extends React.Component<NodeRendererProps> {
   
-  // Provide a helper so we don’t clutter `render()`.
-
-  /**
-   * 
-   * we already have this in freeformcanvas, so maybe we not need the if/else?
-   * onClickRemove = (childStore: NodeStore) => {
-      this.props.store.removeNode(childStore);
-    }; */
-  /*private handleRemove = () => {
-    const { node, onRemove, parentCollection } = this.props;
-    if (onRemove) {
-      onRemove();
-    } else if (parentCollection) {
-      parentCollection.removeNode(node);
-    }
-  };*/
-
+/**Renders the view for a node based on its type */
   renderView = () =>{
     const {store, onFollowLink, onDrag, onDragStart, onDragEnd, isContentOnly = false} = this.props;
     const parentCollection = this.props.collection

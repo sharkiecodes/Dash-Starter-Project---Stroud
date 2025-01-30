@@ -38,7 +38,7 @@ export class CompositeNodeView extends React.Component<CompositeNodeProps> {
   }
 
   render() {
-    const { store, onRemove, collection, onFollowLink, onDrag, onDragEnd, onDragStart, isContentOnly } = this.props;
+    const { store, collection, onFollowLink, onDrag, onDragEnd, onDragStart, isContentOnly } = this.props;
     if (isContentOnly){
       return this.renderContent();
     }

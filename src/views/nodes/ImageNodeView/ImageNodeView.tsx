@@ -3,12 +3,11 @@ import * as React from "react";
 import { ImageNodeStore } from "../../../stores/ImageNodeStore";
 import "./../NodeView.scss";
 import "./ImageNodeView.scss";
-import { NodeCollectionStore } from "../../../stores";
 import { BaseNodeProps } from "../BaseNodeFrame/BaseNodeProps";
 import { BaseNodeFrame } from "../BaseNodeFrame/BaseNodeFrame";
 interface ImageNodeProps extends BaseNodeProps<ImageNodeStore>{};
 
-
+/**Represents an ImageNodeView */
 @observer
 export class ImageNodeView extends React.Component<ImageNodeProps> {
 
@@ -28,7 +27,7 @@ export class ImageNodeView extends React.Component<ImageNodeProps> {
     }
 
     render() {
-        const {store, onRemove, collection, onFollowLink, onDrag, onDragEnd, onDragStart, isContentOnly} = this.props; //destructure props
+        const {store, collection, onFollowLink, onDrag, onDragEnd, onDragStart, isContentOnly} = this.props; //destructure props
         if (isContentOnly){
             return this.renderContent();
         }   
@@ -43,7 +42,7 @@ export class ImageNodeView extends React.Component<ImageNodeProps> {
                     position: "absolute"
                 }}
             >
-              <BaseNodeFrame store = {store} onRemove = {onRemove} collection = {collection} onFollowLink = {onFollowLink} onDrag = {onDrag} onDragEnd = {onDragEnd} onDragStart ={onDragStart}>
+              <BaseNodeFrame store = {store} collection = {collection} onFollowLink = {onFollowLink} onDrag = {onDrag} onDragEnd = {onDragEnd} onDragStart ={onDragStart}>
               {this.renderContent()}
               </BaseNodeFrame>
 

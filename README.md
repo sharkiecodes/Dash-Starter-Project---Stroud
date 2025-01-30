@@ -9,4 +9,4 @@ From the project directory, run
 
 If you have issues (or if you're running it for the first time), run `npm install` in the project directory and repeat the above steps.
 
-
+//Lanyi's note: My own README is in a text file, please take a look at the other file!

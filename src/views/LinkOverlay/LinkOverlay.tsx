@@ -46,6 +46,8 @@ interface LinkOverlayProps {
              * Additionally, their monitorDOMChanges property was also removed as of the version I'm using,
              * so I also couldn't rely on that to trigger re-rendering.
              * 
+             * they don't use mobX to track state like we do.
+             * 
              * While there is another built-in solution for the issue of reactively updating to DOM changes in the
              * version I'm using, it relies on evaluation of Xwrapper and useXarrow hook. Since the starter project handout
              * stated that class components were strongly recommended, I decided to simply reference

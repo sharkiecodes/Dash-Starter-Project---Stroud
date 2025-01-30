@@ -15,12 +15,6 @@ export interface BaseNodeProps<T extends NodeStore = NodeStore> {
   store: T;
 
   /**
-   * A callback for removing this node from its parent. For my purposes, typically means
-   * calling 'parentCollection.removeNode(store)'
-   */
-  onRemove?: () => void; //DEL
-
-  /**
    * Add a reference to the parent collection so we can show a link dropdown.
    * That is, if the node is part of a NodeCollectionStore, pass it here so we can
    * do things like linking (`LinkPanel`), or nested rendering. This is optional,

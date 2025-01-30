@@ -18,18 +18,18 @@ interface GridCanvasProps {
 export class GridCanvas extends React.Component<GridCanvasProps> {
 
   @observable
-  private highlightedNodeId: string | null = null;
+  private highlightedNodeId: string | null = null; //Id of the highlighted node
 
   /**
    * Called when a user “follows” a link in a child node.
    * We store the highlighted node’s ID so only that cell is visibly highlighted.
+   * @param node the NodeStore to be highlighted
    */
   highlightCell = (node: NodeStore) => {
 
       this.highlightedNodeId = node.Id;
     }
     
-  
   render() {
     const { store } = this.props;
 

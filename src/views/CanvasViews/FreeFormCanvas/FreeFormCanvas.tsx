@@ -14,44 +14,21 @@ import { NodeRenderer } from "../../NodeRenderer/NodeRenderer";
 import { LinkOverlay } from "../../LinkOverlay/LinkOverlay"; // <-- arrows overlay
 import { MouseTrailView } from "../../MouseTrail/MouseTrailView";
 import { TOPBAR_HEIGHT } from "../../../Constants";
-import { AddNodeToolbar } from "../../AddNodeToolbar/AddNodeToolbar";
 import "./FreeFormCanvas.scss";
-
 
 interface FreeFormProps {
   store: NodeCollectionStore;          // The node-collection store for this freeform canvas
   mouseTrailStore?: MouseTrailStore;   // <-- optional prop for the MouseTrailStore
 }
 
-/**This method evaluates if two dragged nodes are intersecting based on whether
- * or not their top bars are intersecting.
- * Takes in two parameters which represent the NodeStores being dragged.
+/**
+ * The FreeFormCanvas class renders a collection of child nodes in standard frames on a canvas
+ * that can be panned by dragging. The class manages drag-and-drop behavior for nodes and
+ * general handling of user dragging/panning on the canvas.
+ * Also manages the canvas's response to following links (centering on a node)
+ * Additionally displays a LinkOverlay, which are arrows connecting linked nodes.
+ * Optionally includes a mouse trail that triggers when panned.
  */
-function boxesIntersectTopBars(a: NodeStore, b: NodeStore): boolean {
-  // Instead of checking the entire node's bounding box ...
-  // node.x, node.y, node.width, node.height
-  // check only the top bar region:
-
-  // A's top bar is at (a.x, a.y, a.width, TOPBAR_HEIGHT)
-  const ax = a.x;
-  const ay = a.y;
-  const aw = a.width;
-  const ah = TOPBAR_HEIGHT;
-
-  // B's top bar is at (b.x, b.y, b.width, TOPBAR_HEIGHT)
-  const bx = b.x;
-  const by = b.y;
-  const bw = b.width;
-  const bh = TOPBAR_HEIGHT;
-
-  return (
-    ax < bx + bw &&
-    ax + aw > bx &&
-    ay < by + bh &&
-    ay + ah > by
-  );
-}
-
 @observer
 export class FreeFormCanvas extends React.Component<FreeFormProps> {
   private isPointerDown = false; //tracks pointer
@@ -68,12 +45,45 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
 
 
 
-   /**
+   /*
    * Store a ref to the outer container so we can measure
    * its width/height for centering a node. (For following links)
    */
    private containerRef = React.createRef<HTMLDivElement>();
 
+
+  /**This method evaluates if two dragged nodes are intersecting based on whether
+   * or not their top bars are intersecting.
+   * Takes in two parameters which represent the NodeStores being dragged.
+   * @param a a NodeStore being dragged
+   * @param b the second NodeStore being dragged 
+   * @returns a boolean representing whether the nodes are intersecting
+   * (Order of which node is passed as "a" or "b" is irrelevant)
+   */
+  private boxesIntersectTopBars = (a: NodeStore, b: NodeStore) => {
+    // Instead of checking the entire node's bounding box ...
+    // node.x, node.y, node.width, node.height
+    // check only the top bar region:
+
+    // A's top bar is at (a.x, a.y, a.width, TOPBAR_HEIGHT)
+    const ax = a.x;
+    const ay = a.y;
+    const aw = a.width;
+    const ah = TOPBAR_HEIGHT;
+
+    // B's top bar is at (b.x, b.y, b.width, TOPBAR_HEIGHT)
+    const bx = b.x;
+    const by = b.y;
+    const bw = b.width;
+    const bh = TOPBAR_HEIGHT;
+
+    return (
+      ax < bx + bw &&
+      ax + aw > bx &&
+      ay < by + bh &&
+      ay + ah > by
+    );
+  }
   
 
   /** 
@@ -143,10 +153,12 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
     
   };
 
-
-  // ----------------------------------
-  // Center on a particular node
-  // ----------------------------------
+  /**
+   * Centers on a particular node.
+   * Adjusts the panning of the canvas appropriately to be centered on the given node.
+   * @param node the NodeStore to be centered on
+   * 
+   */
   centerOnNode = (node: NodeStore) => {
     const containerEl = this.containerRef.current;
     if (!containerEl) return;
@@ -176,12 +188,15 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
     this.props.store.panY = containerCenterY - nodeCenterY;
   };
 
-    //callback for "Follow" actions from the LinkPanel in node views
+   /**
+    * Handles following link behavior
+    * @param node the linked NodeStore you are trying to follow 
+    */
     handleFollowLink = (node: NodeStore) => {
-      this.centerOnNode(node);
+      this.centerOnNode(node);  //callback for "Follow" actions from the LinkPanel in node views
     };
 
-    // ---------------------------
+   // ---------------------------
   // DRAGGING A NODE:  Called by child node’s TopBar
   // ---------------------------
   /**
@@ -217,7 +232,7 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
       if (other === node) continue;
 
       // If they overlap, mark as found target and break
-      if (boxesIntersectTopBars(node, other)) {
+      if (this.boxesIntersectTopBars(node, other)) {
         foundTarget = other;
         break;
       }
@@ -243,119 +258,195 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
     this.dropTargetNode = null;
   };
 
-  /**
-   * Merges two nodes into one:
-   * - If the drop target is already a CollectionNode, we add the dragged node as a child.
-   * - If the dragged node is a CollectionNode (but the target is not), we add the target as a child.
-   * - Otherwise, we create a new CollectionNode to contain them both.
-   */
-  private mergeNodes(dragged: NodeStore, target: NodeStore, useComposite: boolean): void {
-    const parentCollection = this.props.store;
+ /**
+ *  Merge two nodes when one is dragged onto the other.
+ * Depending on the node types, different merge strategies are applied.
+ * * - If the drop target is already a CollectionNode, we add the dragged node as a child.
+ * - If the dragged node is a CollectionNode (but the target is not), we add the target as a child.
+ * - Otherwise, we create a new CollectionNode to contain them both.
+ * @param dragged - The node that was being dragged.
+ * @param target - The node on which the dragged node was dropped.
+ * @param useComposite - If true, we create a CompositeNodeStore as the container.
+ */
+private mergeNodes(dragged: NodeStore, target: NodeStore, useComposite: boolean): void {
+  const parentCollection = this.props.store;
 
-    if (useComposite) {
-      // Create a CompositeNode instead of a nested NodeCollection
-      const composite = new CompositeNodeStore({
-        // position, width, etc. 
-        type: StoreType.Composite,
-        title: "", //or "Composite Node", but I think it looks cleaner without a title
-        childNodes: [dragged, target],
-        x: target.x,
-        y: target.y,
-        width: Math.max(dragged.width, target.width),
-        height: Math.max(dragged.height, target.height),
-      });
-  
-      // remove from parent
-      parentCollection.removeNode(dragged);
-      parentCollection.removeNode(target);
-  
-      // offset child positions if you want
-      dragged.x = dragged.x - composite.x;
-      dragged.y = dragged.y - composite.y;
-      target.x = target.x - composite.x;
-      target.y = target.y - composite.y;
-  
-      // add the new composite to the parent
-      parentCollection.addNode(composite);
-      return;
-    }
-    else if (target.type === StoreType.Scrapbook) {
-      // add the dragged node as a child of that Scrapbook
-      parentCollection.removeNode(dragged);
-      (target as ScrapbookNodeStore).addChild(dragged);
-      // offset x/y if necessary
-      return;
-    }
-    // CASE 1: If `target` is already a collection, just add `dragged`
-    if (target.type === StoreType.Collection) {
-      // parent removes dragged
-      parentCollection.removeNode(dragged);
-
-      // cast to NodeCollectionStore
-      const targetCollection = target as NodeCollectionStore;
-
-      // Adjust dragged’s coords to be inside that node, if you want
-      // e.g. place them relative to the target’s top-left
-      dragged.x = dragged.x - targetCollection.x;
-      dragged.y = dragged.y - targetCollection.y;
-
-      targetCollection.addNode(dragged);
-      return;
-    }
-
-    // CASE 2: If `dragged` is a collection but `target` is not
-    if (dragged.type === StoreType.Collection) {
-      // remove `target` from parent
-      parentCollection.removeNode(target);
-
-      // cast dragged to NodeCollectionStore
-      const draggedCollection = dragged as NodeCollectionStore;
-
-      // adjust target’s coords to place it inside dragged
-      target.x = target.x - draggedCollection.x;
-      target.y = target.y - draggedCollection.y;
-
-      draggedCollection.addNode(target);
-      return;
-    }
-
-    // CASE 3: Otherwise, neither is a collection. We create a new one.
-    //  a) remove both from the parent
-    parentCollection.removeNode(dragged);
-    parentCollection.removeNode(target);
-
-    //  b) create a new NodeCollectionStore
-    const newCollection = new NodeCollectionStore({
-      // Give it a size, position, etc. 
-      type: StoreType.Collection,
-      x: target.x,
-      y: target.y,
-      width: target.width,
-      height: target.height,
-      title: "Merged Collection (resize to view)"
-    });
-
-    // c) Add both nodes inside that collection
-    // We’ll adjust them to sit inside the new Collection
-    dragged.x = dragged.x - newCollection.x;
-    dragged.y = dragged.y - newCollection.y;
-
-    target.x = target.x - newCollection.x;
-    target.y = target.y - newCollection.y;
-
-    newCollection.addNode(target);
-    newCollection.addNode(dragged);
-
-    // d) Add the new collection to the parent
-    parentCollection.addNode(newCollection);
+  // 1) If we explicitly want to create a CompositeNodeStore to hold both nodes:
+  if (useComposite) {
+    this.mergeIntoComposite(dragged, target, parentCollection);
+    return;
   }
+
+  // 2) If the target is a Scrapbook node, just add the dragged node inside it.
+  if (target.type === StoreType.Scrapbook) {
+    this.addToScrapbook(dragged, target as ScrapbookNodeStore, parentCollection);
+    return;
+  }
+
+  // 3) If the target is already a Collection, add the dragged node to that collection.
+  if (target.type === StoreType.Collection) {
+    this.addNodeToCollection(dragged, target as NodeCollectionStore, parentCollection);
+    return;
+  }
+
+  // 4) If the dragged node is a Collection (but target is not), add the target to the dragged collection.
+  if (dragged.type === StoreType.Collection) {
+    this.addTargetToDraggedCollection(dragged as NodeCollectionStore, target, parentCollection);
+    return;
+  }
+
+  // 5) Otherwise, neither is a collection. Create a new Collection node to wrap both.
+  this.wrapNodesInNewCollection(dragged, target, parentCollection);
+}
+
+/**
+ * Merges both the dragged and the target nodes into a newly created CompositeNodeStore.
+ * @param dragged - The node that was being dragged.
+ * @param target - The node on which the dragged node was dropped.
+ * @param parentCollection - The parent collection from which both nodes are being removed.
+ */
+private mergeIntoComposite(
+  dragged: NodeStore,
+  target: NodeStore,
+  parentCollection: NodeCollectionStore
+) {
+  // 1) Create a new composite node and set its position and size
+  const composite = new CompositeNodeStore({
+    type: StoreType.Composite,
+    title: "", // Or give it a name like "Composite Node"
+    childNodes: [dragged, target],
+    x: target.x,
+    y: target.y,
+    width: Math.max(dragged.width, target.width),
+    height: Math.max(dragged.height, target.height),
+  });
+
+  // 2) Remove the dragged and target nodes from the parent
+  parentCollection.removeNode(dragged);
+  parentCollection.removeNode(target);
+
+  // 3) Adjust each child's coordinates so they remain visually in the same place,
+  //   but relative to the new CompositeNode's origin
+  dragged.x -= composite.x;
+  dragged.y -= composite.y;
+  target.x -= composite.x;
+  target.y -= composite.y;
+
+  // 4) Finally, add the composite to the parent
+  parentCollection.addNode(composite);
+}
+
+/**
+ * Adds the dragged node into an existing Scrapbook node.
+ * @param dragged - The node that was being dragged.
+ * @param scrapbook - The target scrapbook node to which the dragged node will be added.
+ * @param parentCollection - The parent collection that currently holds the dragged node.
+ */
+private addToScrapbook(
+  dragged: NodeStore,
+  scrapbook: ScrapbookNodeStore,
+  parentCollection: NodeCollectionStore
+) {
+  // 1) Remove the dragged node from its current parent
+  parentCollection.removeNode(dragged);
+
+  // 2) Add it to the scrapbook’s list of child nodes
+  scrapbook.addChild(dragged);
+}
+
+/**
+ * Adds the dragged node to an existing collection node.
+ * @param dragged - The node that was being dragged.
+ * @param targetCollection - The existing collection node that will hold the dragged node.
+ * @param parentCollection - The parent collection that currently holds the dragged node.
+ */
+private addNodeToCollection(
+  dragged: NodeStore,
+  targetCollection: NodeCollectionStore,
+  parentCollection: NodeCollectionStore
+) {
+  // 1) Remove the dragged node from the top-level collection
+  parentCollection.removeNode(dragged);
+
+  // 2) Adjust the node’s coordinates so it appears in the correct position
+  //    relative to the targetCollection’s internal coordinate system
+  dragged.x -= targetCollection.x;
+  dragged.y -= targetCollection.y;
+
+  // 3) Add the dragged node to the target collection
+  targetCollection.addNode(dragged);
+}
+
+/**
+ * If the dragged node is a collection, add the single target node inside it.
+ * @param draggedCollection - The dragged node, cast as a NodeCollectionStore.
+ * @param target - The node onto which it was dropped (not a collection).
+ * @param parentCollection - The parent collection that holds the target node.
+ */
+private addTargetToDraggedCollection(
+  draggedCollection: NodeCollectionStore,
+  target: NodeStore,
+  parentCollection: NodeCollectionStore
+) {
+  // 1) Remove the target node from its original parent
+  parentCollection.removeNode(target);
+
+  // 2) Adjust its position so it remains visually consistent
+  target.x -= draggedCollection.x;
+  target.y -= draggedCollection.y;
+
+  // 3) Add the target inside the dragged collection
+  draggedCollection.addNode(target);
+}
+
+/**
+ * Wraps both dragged and target nodes in a newly created collection.
+ * @param dragged - The node that was being dragged.
+ * @param target - The node on which the dragged node was dropped.
+ * @param parentCollection - The parent collection that currently holds both nodes.
+ */
+private wrapNodesInNewCollection(
+  dragged: NodeStore,
+  target: NodeStore,
+  parentCollection: NodeCollectionStore
+) {
+  // 1) Remove both nodes from the parent
+  parentCollection.removeNode(dragged);
+  parentCollection.removeNode(target);
+
+  // 2) Create a new collection to contain them
+  const newCollection = new NodeCollectionStore({
+    type: StoreType.Collection,
+    x: target.x,
+    y: target.y,
+    width: target.width,
+    height: target.height,
+    title: "Merged Collection (resize to view)",
+  });
+
+  // 3) Adjust each node’s position relative to the new collection’s origin
+  dragged.x -= newCollection.x;
+  dragged.y -= newCollection.y;
+  target.x -= newCollection.x;
+  target.y -= newCollection.y;
+
+  // 4) Add both nodes into the new collection
+  newCollection.addNode(target);
+  newCollection.addNode(dragged);
+
+  // 5) Finally, add this new collection to the parent collection
+  parentCollection.addNode(newCollection);
+}
 
   // ---------------------------
   // Mouse/Pointer Handlers
   // ---------------------------
+  /**Manages pointer down situation
+   * @param e the pointer event generated by the user clicking on the canvas
+   */
   onPointerDown = (e: React.PointerEvent) => {
-    e.stopPropagation(); //removed for nested?!?!
-    //e.preventDefault(); //removed to enable clicking add-node-options
+    e.stopPropagation();
+    //removed e.preventDefault() to enable clicking add-node-options; i.e sometimes default behavior is desirable
     this.isPointerDown = true;
     document.removeEventListener("pointermove", this.onPointerMove);
     document.addEventListener("pointermove", this.onPointerMove);
@@ -363,7 +454,10 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
     document.addEventListener("pointerup", this.onPointerUp);
   };
 
-  
+  /**Manages pointer movement situation
+   * Pans and adds point to mouse trail if the pointer is down (that is, we are dragging)
+   * @param e the pointer event generated by the user clicking on the canvas
+   */
   onPointerMove = (e: PointerEvent) => {
     e.stopPropagation();
     e.preventDefault();
@@ -380,10 +474,13 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
   };
 
 }
-
+  /**
+   * Manages onPointerUp behavior
+   * @param e the PointerEvent generated by the user releasing the pointer
+   */
   onPointerUp = (e: PointerEvent) => {
      e.stopPropagation();
-    e.preventDefault(); //removed ?
+    e.preventDefault();
     this.isPointerDown = false;
     document.removeEventListener("pointermove", this.onPointerMove);
     document.removeEventListener("pointerup", this.onPointerUp);

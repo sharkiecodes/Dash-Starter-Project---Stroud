@@ -40,7 +40,7 @@ export class BaseNodeFrame extends React.Component<BaseNodeFrameProps> {
         <RemoveButton collection={collection} node = {store}/>
         
         {collection && (
-          <LinkPanel node={store} collection={collection} onFollowLink={onFollowLink}/>
+          <LinkPanel node={store} collection={collection} onFollowLink={onFollowLink}/> //Shows a linkpanel so long as there is a collection
         )}
 
         <div className="scroll-box">

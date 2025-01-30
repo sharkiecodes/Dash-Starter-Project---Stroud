@@ -13,7 +13,9 @@ export class ScrapbookNodeView extends React.Component<BaseNodeProps<ScrapbookNo
   renderContent = () => {
     const { store } = this.props;
 
-    // For example, find exactly one Website, one Video, ignoring others:
+    /*For example, find exactly one Website, one Video, ignoring others:
+    "Consumes" irrelevant nodes--dragging a node that's not needed will simply be logically
+    stored inside the collection but not graphically displayed*/
     const websiteChild = store.childNodes.find((n) => n.type === 3 /* StoreType.Website */);
     const videoChild   = store.childNodes.find((n) => n.type === 1 /* StoreType.Video */);
 
@@ -81,3 +83,6 @@ export class ScrapbookNodeView extends React.Component<BaseNodeProps<ScrapbookNo
   }
 }
 }
+/*edge case note: scrapbooks can't be used meaningfully in CompositeNodes, otherwise they won't be able
+to recognize the receipt of new nodes from drag-and-drop, as it is now raw content inside the composite node.
+*/
