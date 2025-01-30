@@ -9,7 +9,6 @@
 .grid-canvas {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  //grid-template-rows: repeat(auto-fill, minmax(250px, 1fr));   //this helps a lil bit but not really 
   grid-gap: 1rem;
   padding: 1rem;
 }
@@ -19,8 +18,6 @@
    We override any absolute positioning in the child node 
    so that the grid does not collapse from absolutely positioned children. */
   .grid-cell {
-
-
    .node {
     position: relative !important;
     transform: none !important;

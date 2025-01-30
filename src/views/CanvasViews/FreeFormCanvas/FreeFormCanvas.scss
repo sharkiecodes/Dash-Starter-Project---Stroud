@@ -19,9 +19,8 @@
     position: absolute;
     &.hovered-drop-target {
         .node{
-        outline: 3px dashed rgba(255, 188, 2, 0.7);
+        outline: 3px dashed rgba(255, 188, 2, 0.7); //highlighting when it is being hovered over
         z-index: -1; //be covered by the other node
-        //highlighting when it is being hovered over
         }
       }
 }

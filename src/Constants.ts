@@ -2,9 +2,12 @@ export const TOPBAR_HEIGHT = 20;
 
 export const MOUSE_TRAIL_MAX_POINTS = 100;
 
+
 // Dimensions for node sizing
 export const DEFAULT_NODE_WIDTH = 300;
 export const DEFAULT_NODE_HEIGHT = 350;
+
+export const RANDOM_LOCATION_FACTOR = 1.5; //used in calculating the random positioning of a node upon creation
 
 export const DEFAULT_WEBSITE_WIDTH = 500;
 export const DEFAULT_WEBSITE_HEIGHT = 300;

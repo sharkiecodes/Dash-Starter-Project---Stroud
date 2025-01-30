@@ -1,16 +1,16 @@
 import { observer } from "mobx-react";
 import * as React from 'react';
-import { NodeCollectionStore } from "../../../stores";
+import { NodeCollectionStore, MouseTrailStore } from "../../../stores";
 import { FreeFormCanvas } from "../../CanvasViews/FreeFormCanvas/FreeFormCanvas";
 import { LayoutMode } from "../../../stores/NodeCollectionStore";
 import "./../NodeView.scss";
 import "./CollectionNodeView.scss";
 /**Import after NodeView to ensure CollectionNodeView's scss stylings take precedence*/
 import { GridCanvas } from "../../CanvasViews/GridView/GridCanvas";
-import { TreeCanvas } from "../../CanvasViews/TreeView/TreeCanvas"; 
+import { TreeCanvas } from "../../CanvasViews/TreeView/TreeCanvas/TreeCanvas"; 
 import { BaseNodeProps } from "../BaseNodeFrame/BaseNodeProps";
 import { BaseNodeFrame } from "../BaseNodeFrame/BaseNodeFrame";
-import { MouseTrailStore } from "../../../stores/MouseTrailStore";
+import { AddNodeToolbar } from "../../AddNodeToolbar/AddNodeToolbar";
 
 interface CollectionNodeProps extends BaseNodeProps<NodeCollectionStore>{}
 
@@ -58,6 +58,8 @@ export class CollectionNodeView extends React.Component<CollectionNodeProps> {
              {store.layoutMode === LayoutMode.Tree && (
                <TreeCanvas store={store}/>
              )} </div>
+            {/* UI to select a node type and add a new node */}
+            <AddNodeToolbar store = {store}/>
               </>)
     }
             

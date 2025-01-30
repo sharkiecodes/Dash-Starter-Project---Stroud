@@ -6,25 +6,22 @@ import {
   NodeStore,
   StoreType,
   CompositeNodeStore,
-  ScrapbookNodeStore
+  ScrapbookNodeStore,
+  MouseTrailStore
 } from "../../../stores";
 
 import { NodeRenderer } from "../../NodeRenderer/NodeRenderer";
-import "./FreeFormCanvas.scss";
 import { LinkOverlay } from "../../LinkOverlay/LinkOverlay"; // <-- arrows overlay
 import { MouseTrailView } from "../../MouseTrail/MouseTrailView";
-import { MouseTrailStore } from "../../../stores/MouseTrailStore";
 import { TOPBAR_HEIGHT } from "../../../Constants";
 import { AddNodeToolbar } from "../../AddNodeToolbar/AddNodeToolbar";
+import "./FreeFormCanvas.scss";
 
 
 interface FreeFormProps {
   store: NodeCollectionStore;          // The node-collection store for this freeform canvas
-  mouseTrailStore?: MouseTrailStore;   // <-- Add optional prop for the MouseTrailStore
-  style?: React.CSSProperties; 
+  mouseTrailStore?: MouseTrailStore;   // <-- optional prop for the MouseTrailStore
 }
-
-
 
 /**This method evaluates if two dragged nodes are intersecting based on whether
  * or not their top bars are intersecting.
@@ -33,7 +30,7 @@ interface FreeFormProps {
 function boxesIntersectTopBars(a: NodeStore, b: NodeStore): boolean {
   // Instead of checking the entire node's bounding box ...
   // node.x, node.y, node.width, node.height
-  // You check only the top bar region:
+  // check only the top bar region:
 
   // A's top bar is at (a.x, a.y, a.width, TOPBAR_HEIGHT)
   const ax = a.x;
@@ -57,12 +54,12 @@ function boxesIntersectTopBars(a: NodeStore, b: NodeStore): boolean {
 
 @observer
 export class FreeFormCanvas extends React.Component<FreeFormProps> {
-  private isPointerDown = false;
+  private isPointerDown = false; //tracks pointer
 
    /*
    * References to the node we are actively dragging and the node being hovered as a drop target.
    */
-    private draggingNode: NodeStore | null = null;
+  private draggingNode: NodeStore | null = null;
 
   
   /*Represents the target node for dragging-and-dropping*/
@@ -82,17 +79,19 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
   /** 
    * Helper method for arranging nodes in a staggered grid view.
    * 
-   * Pseudocode: 
+   * Loose Pseudocode: 
    * First, get current width and height of the collection canvas container. 
    * Divide the total height of the container by the number of nodes => newNodeHeight. 10% of newNodeHeight = padding. 
    * Repeat for width. For i = 0, i < nodes.length, i++ { new width = 0.9 newNodeWidth; 
-   * new height = 0.9*newNodeHeight; new X (pre-pan) = newNodeWidth*i, new Y (pre-pan) = newNodeHeight*Y */
+   * new height = 0.9*newNodeHeight; new X (pre-pan) = newNodeWidth*i, new Y (pre-pan) = newNodeHeight*Y 
+   * Set Y differently for every other node to stagger.
+   */
 
   private arrangeInGrid = () => {
     const { store } = this.props;
     const containerElem = this.containerRef.current;
-    if (!containerElem) {
-      return;
+    if (!containerElem) { 
+      return; //Can't continue if there is no bounding client to measure from
     }
 
     // 1) Measure container width/height
@@ -114,13 +113,13 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
     for (let i = 0; i < nodeCount; i++) {
       const node: NodeStore = store.nodes[i];
       
-
-      // The x-position is basically i * newNodeWidth.
       // incorporate store.panX later for camera offset
       const x = newNodeWidth * i;
-      const y = 0 //newNodeHeight * i; // For a single row, we keep y=0 
+      const y = 0 // For a single row, we keep y=0; alternatively could try newNodeHeight * i for different results
 
-      // Now do the sizing. We’ll use 90% of the computed dimension.
+      /* Now do the sizing. We’ll use 90% of the computed dimension.
+      *To get the grid view to work, all nodes should be resized to a single new node size
+       */
       const w = 0.9 * newNodeWidth;
       const h = 0.9 * newNodeHeight;
 
@@ -132,12 +131,8 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
       /*To achieve a staggered effect, adjust the y-value differently
       for every other node...*/
         if (i%2 == 0){
-          // The x-position is basically i * newNodeWidth.
-        // You can incorporate store.panX if you want them offset by the camera.
-        const y = newNodeHeight //*i/2
-        //newNodeHeight * i; // For a single row, we keep y=0 (or store.panY if you want to factor that in).??
-
-
+          // The x-position is already i * newNodeWidth.
+        const y = newNodeHeight
         //Update the node store’s position and size
         node.y = y - store.panY;
       }
@@ -189,12 +184,24 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
     // ---------------------------
   // DRAGGING A NODE:  Called by child node’s TopBar
   // ---------------------------
+  /**
+   * Callback referred to by the topbar
+   * for handling the beginning of a node drag movement
+   * @param node the node being dragged
+   */
   handleNodeDragStart = (node: NodeStore) => {
     this.draggingNode = node;
     // Clear any old drop target
     this.dropTargetNode = null;
   };
 
+  /**
+   * Handles the dragging and identifies if a node is dragged over another
+   * If two nodes' topbars collide, record this logically.
+   * @param node the node being dragged
+   * @param deltaX offset in node x direction
+   * @param deltaY offset in node y direction
+   */
   handleNodeDrag = (node: NodeStore, deltaX: number, deltaY: number) => {
     // Actually move the node
     node.x += deltaX;
@@ -215,11 +222,14 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
         break;
       }
     }
-
     // Update the local “drop target” reference
     this.dropTargetNode = foundTarget;
   };
 
+  /**Handles the end of a node drag sequence.
+   * @param node the node being dragged
+   * @param e the PointerEvent, used to detect if shift key is pressed
+   */
   handleNodeDragEnd = (node: NodeStore, e: PointerEvent) => {
     // If we have a dropTargetNode, do the merge
     if (this.dropTargetNode) {
@@ -228,7 +238,6 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
       this.mergeNodes(node, this.dropTargetNode, shiftPressed);
 
     }
-
     // Reset
     this.draggingNode = null;
     this.dropTargetNode = null;
@@ -242,9 +251,6 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
    */
   private mergeNodes(dragged: NodeStore, target: NodeStore, useComposite: boolean): void {
     const parentCollection = this.props.store;
-    //if (dragged.type = StoreType.Info){
-      //dragged as Info .field
-    //}
 
     if (useComposite) {
       // Create a CompositeNode instead of a nested NodeCollection
@@ -370,7 +376,6 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
       // 2) Also add a mouse-trail point (if we have a store)
       if (this.props.mouseTrailStore) {
         // For an accurate position, use the absolute clientX/clientY
-        // or offset them by the canvas's position if needed
         this.props.mouseTrailStore.addPoint(e.clientX, e.clientY);
   };
 
@@ -395,44 +400,37 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
     return (
       <div className="freeformcanvas-container" onPointerDown={this.onPointerDown} ref={this.containerRef}>
         {/* The "canvas" gets moved around by pointer events */}
-        <div className="freeformcanvas" style={{ transform: `translate(${store.panX}px, ${store.panY}px)`, ...this.props.style }}>
-            {/**USED to say store.transform
-             * should i have whole nother method for this blob?
-            */}
+        <div className="freeformcanvas" style={{ transform: `translate(${store.panX}px, ${store.panY}px)`}}>
           {store.nodes.map((nodeStore) => {
-
-  const isDropTarget = (this.dropTargetNode === nodeStore);
-
-  return (
-    <div
-      key={nodeStore.Id}
-      className={
-        "collection-child-wrapper" + (isDropTarget ? " hovered-drop-target" : "")
-      }
-    >
-      <NodeRenderer
-        store={nodeStore}
-        isContentOnly = {false}
-        collection={store}
-        onFollowLink={this.handleFollowLink}
-        onDrag = {this.handleNodeDrag}
-        onDragStart = {this.handleNodeDragStart}
-        onDragEnd = {this.handleNodeDragEnd}
-      />
-    </div>
-  );
-})}
-
+          const isDropTarget = (this.dropTargetNode === nodeStore);
+          return (
+            <div
+              key={nodeStore.Id}
+              className={
+                "collection-child-wrapper" + (isDropTarget ? " hovered-drop-target" : "")
+              }
+            >
+              <NodeRenderer
+                store={nodeStore}
+                isContentOnly = {false}
+                collection={store}
+                onFollowLink={this.handleFollowLink}
+                onDrag = {this.handleNodeDrag}
+                onDragStart = {this.handleNodeDragStart}
+                onDragEnd = {this.handleNodeDragEnd}
+              />
+            </div>
+          );
+        }
+    )
+  }
         </div>
-        <LinkOverlay collection={store} />
+        <LinkOverlay collection={store} /> {/*Arrow overlay */}
         {/*
           Render mouse trails overlay on top of everything.
           This is an absolutely positioned layer covering the entire area.
         */}
         {mouseTrailStore && <MouseTrailView store={mouseTrailStore} />}
-
-        {/* UI to select a node type and add a new node */}
-        <AddNodeToolbar store = {store}/>
        
         {/* Button to trigger "grid-like" layout */}
         <div className="arrange-grid-ui">

@@ -5,5 +5,6 @@ export * from './VideoNodeStore';
 export * from './WebsiteNodeStore';
 export * from './RichTextNodeStore';
 export * from './ImageNodeStore';
-export * from './CompositeNodeStore'
-export * from './ScrapbookNodeStore'
+export * from './CompositeNodeStore';
+export * from './ScrapbookNodeStore';
+export * from './MouseTrailStore';

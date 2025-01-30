@@ -28,7 +28,7 @@ interface LinkOverlayProps {
   
     return(
     <div className="linkoverlay-container">
-      <Xwrapper {...({ monitorDOMchanges: true } as any)}>
+      <Xwrapper>
         {collection.nodes.map((node) =>
           node.links.map((linkedNode) => {
             /**Force read of each linked node's x, y, and links array so MobX knows to re-render:

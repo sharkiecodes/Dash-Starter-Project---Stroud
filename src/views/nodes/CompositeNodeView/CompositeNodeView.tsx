@@ -13,11 +13,14 @@ interface CompositeNodeProps extends BaseNodeProps<CompositeNodeStore> {
 
 /**
  * Renders multiple child nodes in a single node frame. 
- * Stacked
+ * Stacks them by rendering their content only (without the basenodeframe for each) 
  */
 @observer
 export class CompositeNodeView extends React.Component<CompositeNodeProps> {
 
+  /**Renders the content (title and composite and sub nodes)
+   * For each child node, renders its content only and arranges in the node
+   */
   private renderContent = () =>{
     const {store} = this.props;
     return (
@@ -53,7 +56,6 @@ export class CompositeNodeView extends React.Component<CompositeNodeProps> {
       >
         <BaseNodeFrame
           store={store}
-          onRemove={onRemove}
           collection={collection}
           onFollowLink={onFollowLink}
           onDrag={onDrag}
