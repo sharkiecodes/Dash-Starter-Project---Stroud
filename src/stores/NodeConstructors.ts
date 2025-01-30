@@ -2,13 +2,8 @@
 import { StoreType } from "./NodeStore";
 import { NodeStore } from "./NodeStore";
 import { StaticTextNodeStore } from "./StaticTextNodeStore";
-import { VideoNodeStore } from "./VideoNodeStore";
-import { ImageNodeStore } from "./ImageNodeStore";
-import { WebsiteNodeStore } from "./WebsiteNodeStore";
-import { RichTextNodeStore } from "./RichTextNodeStore";
-import { NodeCollectionStore } from "./NodeCollectionStore";
-import { ScrapbookNodeStore } from "./ScrapbookNodeStore";
-import { CompositeNodeStore } from "./CompositeNodeStore";
+import { VideoNodeStore, ImageNodeStore,WebsiteNodeStore,RichTextNodeStore,NodeCollectionStore,ScrapbookNodeStore, CompositeNodeStore } from "../stores";
+
 /**Maps enum types to node stores */
 export const NodeConstructors: Record<StoreType, typeof NodeStore> = {
   [StoreType.Text]: StaticTextNodeStore,
@@ -20,5 +15,3 @@ export const NodeConstructors: Record<StoreType, typeof NodeStore> = {
   [StoreType.Scrapbook]: ScrapbookNodeStore,
   [StoreType.Composite] : CompositeNodeStore
 };
-
-//changed the initializer to initializer? so that it can be null (which matches up with nodestore)

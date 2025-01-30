@@ -8,7 +8,7 @@ import { observable } from "mobx";
 interface LinkPanelProps {
   node: NodeStore;                  // the node for which we're displaying links
   collection: NodeCollectionStore;  // parent store for all nodes
-   // a callback for "follow link," so we do the centering in the parent
+   // a callback for "follow link," so we do the centering in the parent (if in Freeform view) or highlighting the linked node (if in Grid view)
    onFollowLink?: (node: NodeStore) => void;
 }
 
@@ -63,6 +63,7 @@ export class LinkPanel extends React.Component<LinkPanelProps> {
         <ul>
           {node.links.map((linkedNode) => (
             <li key={linkedNode.Id}>
+              {/**When labeling, consider edge cases where there is no title by displaying the first 3 digits of the node's id */}
                {linkedNode.type === null ? "Null" : StoreType[linkedNode.type]} - {linkedNode.title || "Untitled Node " + linkedNode.Id.at(0) + linkedNode.Id.at(1) + linkedNode.Id.at(2)}
               <button onClick={() => this.handleFollowLink(linkedNode)}>
                 Follow

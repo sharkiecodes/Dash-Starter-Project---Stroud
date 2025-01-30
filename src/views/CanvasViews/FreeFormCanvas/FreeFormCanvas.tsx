@@ -1,14 +1,7 @@
 import { observer } from "mobx-react";
 import { observable } from "mobx";
 import * as React from "react";
-import {
-  NodeCollectionStore,
-  NodeStore,
-  StoreType,
-  CompositeNodeStore,
-  ScrapbookNodeStore,
-  MouseTrailStore
-} from "../../../stores";
+import {NodeCollectionStore, NodeStore, MouseTrailStore} from "../../../stores";
 import { NodeMergeService } from "../../NodeMergeService";
 import { NodeRenderer } from "../../NodeRenderer/NodeRenderer";
 import { LinkOverlay } from "../../LinkOverlay/LinkOverlay"; // <-- arrows overlay
@@ -118,7 +111,7 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
     // Alternative implementation for a column-based arrangement could be:
     // const newNodeHeight = containerHeight / nodeCount;
 
-    //  Each node is 90% of that computed width/height, 
+    // Currently, rach node is 90% of that computed width/height, 
     // with the other 10% effectively acting like “padding”.
     for (let i = 0; i < nodeCount; i++) {
       const node: NodeStore = store.nodes[i];
@@ -127,7 +120,7 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
       const x = newNodeWidth * i;
       const y = 0 // For a single row, we keep y=0; alternatively could try newNodeHeight * i for different results
 
-      /* Now do the sizing. We’ll use 90% of the computed dimension.
+      /* Now determines the sizing. In current implementation, uses 90% of the computed dimension.
       *To get the grid view to work, all nodes should be resized to a single new node size
        */
       const w = GRID_NODE_SIZE_RATIO * newNodeWidth;
@@ -262,8 +255,7 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
     this.draggingNode = null;
     this.dropTargetNode = null;
   };
-
-
+  
   // ---------------------------
   // Mouse/Pointer Handlers
   // ---------------------------
@@ -288,7 +280,6 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
     e.stopPropagation();
     e.preventDefault();
     
-
     if (!this.isPointerDown) return;
     this.props.store.panX += e.movementX
     this.props.store.panY += e.movementY //Now we only shift the internal "camera" offsets
@@ -361,8 +352,6 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
             Arrange in Staggered Grid
           </button></div>
       </div>
-
-      
     );
   }
 }

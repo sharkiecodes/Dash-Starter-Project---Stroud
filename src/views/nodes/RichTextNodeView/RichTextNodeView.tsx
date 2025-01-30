@@ -35,9 +35,6 @@ export class RichTextNodeView extends React.Component<RichTextNodeProps> {
         return(
             <>
         <h3 className="title">{store.title}</h3>
-        {/**onClick={(e: React.MouseEvent) => {
-                             // Stop propagation so that Quill's scroll doesn't bubble
-                            e.stopPropagation();} */}
                                 <div
                                     className="quill-container"
                                     id={uniqueQuillId}

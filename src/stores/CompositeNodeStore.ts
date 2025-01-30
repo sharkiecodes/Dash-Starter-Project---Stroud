@@ -26,7 +26,7 @@ export class CompositeNodeStore extends NodeStore {
         this.childNodes.push(store); //Adds a child
     }
 
-    /**Removes a child from list of childnodes, if it exists in the list.
+    /**Removes a child from list of child nodes, if it exists in the list.
      * @param store the child store you wish to remove
     */
     @action

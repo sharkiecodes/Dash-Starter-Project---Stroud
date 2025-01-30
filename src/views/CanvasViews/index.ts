@@ -1,3 +1,3 @@
 export * from "./FreeFormCanvas";
-export * from "./GridView";
-export * from "./TreeView";
+export * from "./GridCanvas";
+export * from "./TreeCanvas";

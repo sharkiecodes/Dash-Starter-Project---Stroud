@@ -8,18 +8,19 @@ interface ResizeHandleProps {
     store: NodeStore;
     
 }
-/**WILL FULLY COMMENT LATER */
+/**Defines a resize handle for a node, allowing the dragging of a mouse to affect
+ * a NodeStore's height and width.
+*/
 @observer
 export class ResizeHandle extends React.Component<ResizeHandleProps> {
     private isPointerDown = false;
 
-
     onPointerDown = (e: React.PointerEvent): void => {
 
-        //if (e.currentTarget.classList.contains("resize-handle")) {
-            e.stopPropagation();
-            e.preventDefault();
-        //}
+      
+        e.stopPropagation();
+        e.preventDefault();
+    
         this.isPointerDown = true;
         
         /**Similar event listener logic as dragging the freeform canvas, where clicking adds event listeners for 

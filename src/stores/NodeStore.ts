@@ -24,7 +24,6 @@ export enum StoreType {
  */
 export class NodeStore {
 
-    /**GO BACK DELETE TS PLS */
     constructor(initializer?: Partial<NodeStore>) {
         Object.assign(this, initializer);
     }
@@ -121,7 +120,7 @@ export class NodeStore {
     }
 }
 /***Note--Further elaboration on field definitions implementation***
-*Conceptually, the field definitions would work as follows:
+*Conceptually, in practice the field definitions would be used as follows:
 * 
 * For the selected NodeClass:
 *  const fieldDefs = NodeClass.fieldDefinitions;

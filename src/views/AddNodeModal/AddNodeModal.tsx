@@ -5,7 +5,7 @@ import { NodeStore } from "../../stores";
 import { StoreType } from "../../stores";
 import { FieldDefinition } from "../../stores/FieldDefinition";
 import { NodeConstructors } from "../../stores/NodeConstructors";
-import './AddNodeForm.scss';
+import './AddNodeModal.scss';
 import { DEFAULT_NODE_HEIGHT, DEFAULT_NODE_WIDTH } from "../../Constants";
 import { observer } from "mobx-react";
 
@@ -42,7 +42,7 @@ export class AddNodeModal extends React.Component<AddNodeModalProps> {
     that would conditionally fetch field definitions */
 
     // 2) Gather all field definitions for that class (including inherited ones)
-    this.fieldDefs = NodeClass.fieldDefinitions; //direct access is kinda risky
+    this.fieldDefs = NodeClass.fieldDefinitions; //All nodes define an array of field definitions
 
     // 3) Build an initial formData from defaults
     const initialFormData: Record<string, any> = {};
@@ -118,22 +118,14 @@ export class AddNodeModal extends React.Component<AddNodeModalProps> {
         );
     }
   }
-
+      /**
+      * This bars clicking other buttons, dragging nodes,
+      * or accidentally panning when you intend to be typing/highlighting text in the textboxes.
+      */
      onPointerDown = (e: React.PointerEvent) => {
         e.stopPropagation();
-        /**Necessary to stop propagation, otherwise the freeform canvas could interpret
+        /*Necessary to stop propagation, otherwise the freeform canvas could interpret
          * the click as an attempt to pan, and would consider the pointer to be down.*/
-
-         /**
-          * This bars clicking other buttons, dragging nodes,
-          * or accidentally panning when you intend to be typing/highlighting text in the textboxes.
-          * 
-          * You can still pan underneath the form, I thought it was kind of fun to be able to pan
-          * underneath the form so I left it in. If that's not desired, you could add onPointerDown = {this.onPointerDown}
-          * to the modal backdrop div.
-          * 
-          * 
-          */
       }
 
   

@@ -1,26 +1,7 @@
 // NodeRendererClass.tsx
 import * as React from "react";
-import {
-  StoreType,
-  StaticTextNodeStore,
-  VideoNodeStore,
-  ImageNodeStore,
-  WebsiteNodeStore,
-  RichTextNodeStore,
-  NodeCollectionStore,
-  CompositeNodeStore,
-  ScrapbookNodeStore
-} from "../../stores";
-import {
-  TextNodeView,
-  CollectionNodeView,
-  VideoNodeView,
-  WebsiteNodeView,
-  RichTextNodeView,
-  ImageNodeView,
-  CompositeNodeView,
-  ScrapbookNodeView
-} from "../nodes";
+import {StoreType, StaticTextNodeStore, VideoNodeStore, ImageNodeStore, WebsiteNodeStore, RichTextNodeStore, NodeCollectionStore, CompositeNodeStore, ScrapbookNodeStore} from "../../stores";
+import {TextNodeView, CollectionNodeView, VideoNodeView, WebsiteNodeView, RichTextNodeView, ImageNodeView, CompositeNodeView, ScrapbookNodeView} from "../nodes";
 import { BaseNodeProps } from "../nodes/BaseNodeFrame/BaseNodeProps";
 import "./NodeRenderer.scss"
 

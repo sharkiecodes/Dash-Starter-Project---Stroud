@@ -46,11 +46,11 @@ interface LinkOverlayProps {
              * Additionally, their monitorDOMChanges property was also removed as of the version I'm using,
              * so I also couldn't rely on that to trigger re-rendering.
              * 
-             * they don't use mobX to track state like we do.
+             * Basically, it comes down to the fact that they don't use mobX to track state like we do.
              * 
              * While there is another built-in solution for the issue of reactively updating to DOM changes in the
              * version I'm using, it relies on evaluation of Xwrapper and useXarrow hook. Since the starter project handout
-             * stated that class components were strongly recommended, I decided to simply reference
+             * stated that class components and MobX were strongly recommended, I decided to simply reference
              * the observable properties in a one-line statement as opposed to implementing react-xarrows
              * using functional components in order to achieve reactive arrow updating.
              * 

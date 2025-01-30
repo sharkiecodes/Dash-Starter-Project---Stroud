@@ -69,7 +69,7 @@ import {
      // Create a new composite node and set its position/size
      const composite = new CompositeNodeStore({
        type: StoreType.Composite,
-       title: "Composite Node",
+       title: "", //Looks better without a title
        childNodes: [dragged, target],
        x: target.x,
        y: target.y,

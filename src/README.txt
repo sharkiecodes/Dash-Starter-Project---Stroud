@@ -18,7 +18,7 @@ Nodes can be dragged and dropped onto each other. Dragging and dropping two non-
 together creates a new collection where they are merged. Dragging and dropping a node
 onto an existing collection adds it to that collection.
 
-Please press and hold the SHIFT key when dragging two nodes together to create a CompositeNode.
+Please press and hold the SHIFT key when dragging two nodes together to create a CompositeNode. 
 The concept behind a CompositeNode is based on two concepts:
 1. Cmbine two or more nodes without creating an entire new subcollection
 2. Having a way to arrange multiple nodes' stripped content together inside a single BaseNodeFrame.
@@ -72,6 +72,22 @@ through an isContentOnly prop.
 
 NodeRenderer is a single component to return a NodeView for any node type. This ensures we only maintain one switch,
 rather than having to repeat the logic for node instantiation.
+
+As recommended, I relied on class components (rather than functional components) throughout this project.
+
+I pulled out the merge logic into a NodeMergeService, which is a service class.
+I could've included this in Utils.ts, but decided not, as the merge logic is only used in FreeFormCanvas
+and isn't applicable throuhgout the entirety of the program.
+
+Addressing Edge Cases:
+I dealt with some very specific edge cases and addressed the issues as much as possible, such as
+whether nodes were untitled, or what kind of nodes might be merged together, and whether there were
+existing links on nodes being merged, formatting of nodes in CompositeNode, etc.
+
+For example, implementing the ability to merge collections into a CompositeNode,  required the raw collection content to be provided
+a bounding width and height.
+
+
 ***********************
 
 Misc. Design Notes:

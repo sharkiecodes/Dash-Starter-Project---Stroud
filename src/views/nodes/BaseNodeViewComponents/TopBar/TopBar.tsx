@@ -9,7 +9,9 @@ interface TopBarProps {
     onDrag?: (node: NodeStore, dx: number, dy: number, e: PointerEvent) => void;
     onDragEnd?: (node: NodeStore, e: PointerEvent) => void;
 }
-
+/**Defines a draggable TopBar for a NodeView
+ * Can drag and move a node, causing behavior defined in the onDrag handler props
+ */
 @observer
 export class TopBar extends React.Component<TopBarProps> {
 
@@ -51,8 +53,6 @@ export class TopBar extends React.Component<TopBarProps> {
             // Instead of directly setting store.x/store.y,
         // we forward the movement to FreeFormCanvas:
         this.props.onDrag?.(this.props.store, e.movementX, e.movementY, e);
-        //this.props.store.x += e.movementX;
-        //this.props.store.y += e.movementY;
 
     }
 

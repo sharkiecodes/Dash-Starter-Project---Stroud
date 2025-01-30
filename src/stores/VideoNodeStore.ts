@@ -9,7 +9,7 @@ export class VideoNodeStore extends NodeStore {
         super();
         Object.assign(this, initializer);
     }
-    /*Represents fieldDefinitinos for a VideoNodeStore*/
+    /*Represents fieldDefinitions for a VideoNodeStore*/
     public static fieldDefinitions: FieldDefinition[] = [
         ...NodeStore.fieldDefinitions
       ];
@@ -20,7 +20,7 @@ export class VideoNodeStore extends NodeStore {
   
     @FormField({ label: "Video URL", inputType: "string", defaultValue: "http://cs.brown.edu/people/peichman/downloads/cted.mp4" })
     @observable
-    public url: string | undefined;
+    public url: string | undefined; //video url
     
 
 }

@@ -2,7 +2,7 @@ import { observable } from "mobx";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { StoreType } from "../../stores";
-import { AddNodeModal } from "../AddNodeForm/AddNodeForm";
+import { AddNodeModal } from "../AddNodeModal/AddNodeModal";
 import { NodeStore, NodeCollectionStore } from "../../stores";
 import { RANDOM_LOCATION_FACTOR } from "../../Constants";
 import "./AddNodeToolbar.scss";
@@ -69,7 +69,7 @@ export class AddNodeToolbar extends React.Component<AddNodeToolbarProps> {
           </div>
              {/* Show AddNodeModal if needed 
              The boolean operator works such that if showAddModal is true, it will evaluate the righthand-side
-             and dispplay the addNodeModal*/}
+             and display the addNodeModal*/}
              {this.showAddModal && (
           <AddNodeModal
             nodeType={this.newNodeType}

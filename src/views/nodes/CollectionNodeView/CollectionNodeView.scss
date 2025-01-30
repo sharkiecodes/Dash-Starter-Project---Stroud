@@ -16,29 +16,25 @@
   overflow: hidden;
   position: relative;
 
-.layout-select {
-  position: absolute; 
-  top: 30px;
-  right: 50px;
-  background-color: rgb(238, 225, 227);
+  .layout-select {
+    position: absolute; 
+    top: 30px;
+    right: 50px;
+    background-color: rgb(238, 225, 227);
 
-  
-}
-.content {
-  height: calc(100% - 80px);
-  // above: subtract some space for padding and to set a fixed height for this container instead of auto height
-}
+    
+  }
+  .content {
+    height: calc(100% - 80px);
+    // above: subtract some space for padding and to set a fixed height for this container instead of auto height
+  }
 
-.collection-content {
-  position: relative;
-  width: 100%;
-  color: rgb(10, 40, 56); //changing the color as a visual indication that components inside the nested collection are nested!
-  background-color: rgb(255, 244, 172);
-  height: 100%; //A defined height here, as opposed to auto is important to the collection-content doesn't reduce
-
- 
-}
-
- 
+  .collection-content {
+    position: relative;
+    width: 100%;
+    color: rgb(10, 40, 56); //changing the color as a visual indication that components inside the nested collection are nested!
+    background-color: rgb(255, 244, 172);
+    height: 100%; //A defined height here, as opposed to auto is important to the collection-content doesn't reduce
+  }
 }
 
