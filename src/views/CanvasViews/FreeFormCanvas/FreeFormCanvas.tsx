@@ -9,11 +9,11 @@ import {
   ScrapbookNodeStore,
   MouseTrailStore
 } from "../../../stores";
-
+import { NodeMergeService } from "../../NodeMergeService";
 import { NodeRenderer } from "../../NodeRenderer/NodeRenderer";
 import { LinkOverlay } from "../../LinkOverlay/LinkOverlay"; // <-- arrows overlay
 import { MouseTrailView } from "../../MouseTrail/MouseTrailView";
-import { TOPBAR_HEIGHT } from "../../../Constants";
+import { TOPBAR_HEIGHT, GRID_NODE_SIZE_RATIO } from "../../../Constants";
 import "./FreeFormCanvas.scss";
 
 interface FreeFormProps {
@@ -130,8 +130,8 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
       /* Now do the sizing. We’ll use 90% of the computed dimension.
       *To get the grid view to work, all nodes should be resized to a single new node size
        */
-      const w = 0.9 * newNodeWidth;
-      const h = 0.9 * newNodeHeight;
+      const w = GRID_NODE_SIZE_RATIO * newNodeWidth;
+      const h = GRID_NODE_SIZE_RATIO * newNodeHeight;
 
       // Update the node store’s position and size
       
@@ -250,7 +250,12 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
     if (this.dropTargetNode) {
             // Check SHIFT
       const shiftPressed = e.shiftKey;
-      this.mergeNodes(node, this.dropTargetNode, shiftPressed);
+      NodeMergeService.mergeNodes(
+        node,
+        this.dropTargetNode,
+        shiftPressed,
+        this.props.store
+      );
 
     }
     // Reset
@@ -258,185 +263,6 @@ export class FreeFormCanvas extends React.Component<FreeFormProps> {
     this.dropTargetNode = null;
   };
 
- /**
- *  Merge two nodes when one is dragged onto the other.
- * Depending on the node types, different merge strategies are applied.
- * * - If the drop target is already a CollectionNode, we add the dragged node as a child.
- * - If the dragged node is a CollectionNode (but the target is not), we add the target as a child.
- * - Otherwise, we create a new CollectionNode to contain them both.
- * @param dragged - The node that was being dragged.
- * @param target - The node on which the dragged node was dropped.
- * @param useComposite - If true, we create a CompositeNodeStore as the container.
- */
-private mergeNodes(dragged: NodeStore, target: NodeStore, useComposite: boolean): void {
-  const parentCollection = this.props.store;
-
-  // 1) If we explicitly want to create a CompositeNodeStore to hold both nodes:
-  if (useComposite) {
-    this.mergeIntoComposite(dragged, target, parentCollection);
-    return;
-  }
-
-  // 2) If the target is a Scrapbook node, just add the dragged node inside it.
-  if (target.type === StoreType.Scrapbook) {
-    this.addToScrapbook(dragged, target as ScrapbookNodeStore, parentCollection);
-    return;
-  }
-
-  // 3) If the target is already a Collection, add the dragged node to that collection.
-  if (target.type === StoreType.Collection) {
-    this.addNodeToCollection(dragged, target as NodeCollectionStore, parentCollection);
-    return;
-  }
-
-  // 4) If the dragged node is a Collection (but target is not), add the target to the dragged collection.
-  if (dragged.type === StoreType.Collection) {
-    this.addTargetToDraggedCollection(dragged as NodeCollectionStore, target, parentCollection);
-    return;
-  }
-
-  // 5) Otherwise, neither is a collection. Create a new Collection node to wrap both.
-  this.wrapNodesInNewCollection(dragged, target, parentCollection);
-}
-
-/**
- * Merges both the dragged and the target nodes into a newly created CompositeNodeStore.
- * @param dragged - The node that was being dragged.
- * @param target - The node on which the dragged node was dropped.
- * @param parentCollection - The parent collection from which both nodes are being removed.
- */
-private mergeIntoComposite(
-  dragged: NodeStore,
-  target: NodeStore,
-  parentCollection: NodeCollectionStore
-) {
-  // 1) Create a new composite node and set its position and size
-  const composite = new CompositeNodeStore({
-    type: StoreType.Composite,
-    title: "", // Or give it a name like "Composite Node"
-    childNodes: [dragged, target],
-    x: target.x,
-    y: target.y,
-    width: Math.max(dragged.width, target.width),
-    height: Math.max(dragged.height, target.height),
-  });
-
-  // 2) Remove the dragged and target nodes from the parent
-  parentCollection.removeNode(dragged);
-  parentCollection.removeNode(target);
-
-  // 3) Adjust each child's coordinates so they remain visually in the same place,
-  //   but relative to the new CompositeNode's origin
-  dragged.x -= composite.x;
-  dragged.y -= composite.y;
-  target.x -= composite.x;
-  target.y -= composite.y;
-
-  // 4) Finally, add the composite to the parent
-  parentCollection.addNode(composite);
-}
-
-/**
- * Adds the dragged node into an existing Scrapbook node.
- * @param dragged - The node that was being dragged.
- * @param scrapbook - The target scrapbook node to which the dragged node will be added.
- * @param parentCollection - The parent collection that currently holds the dragged node.
- */
-private addToScrapbook(
-  dragged: NodeStore,
-  scrapbook: ScrapbookNodeStore,
-  parentCollection: NodeCollectionStore
-) {
-  // 1) Remove the dragged node from its current parent
-  parentCollection.removeNode(dragged);
-
-  // 2) Add it to the scrapbook’s list of child nodes
-  scrapbook.addChild(dragged);
-}
-
-/**
- * Adds the dragged node to an existing collection node.
- * @param dragged - The node that was being dragged.
- * @param targetCollection - The existing collection node that will hold the dragged node.
- * @param parentCollection - The parent collection that currently holds the dragged node.
- */
-private addNodeToCollection(
-  dragged: NodeStore,
-  targetCollection: NodeCollectionStore,
-  parentCollection: NodeCollectionStore
-) {
-  // 1) Remove the dragged node from the top-level collection
-  parentCollection.removeNode(dragged);
-
-  // 2) Adjust the node’s coordinates so it appears in the correct position
-  //    relative to the targetCollection’s internal coordinate system
-  dragged.x -= targetCollection.x;
-  dragged.y -= targetCollection.y;
-
-  // 3) Add the dragged node to the target collection
-  targetCollection.addNode(dragged);
-}
-
-/**
- * If the dragged node is a collection, add the single target node inside it.
- * @param draggedCollection - The dragged node, cast as a NodeCollectionStore.
- * @param target - The node onto which it was dropped (not a collection).
- * @param parentCollection - The parent collection that holds the target node.
- */
-private addTargetToDraggedCollection(
-  draggedCollection: NodeCollectionStore,
-  target: NodeStore,
-  parentCollection: NodeCollectionStore
-) {
-  // 1) Remove the target node from its original parent
-  parentCollection.removeNode(target);
-
-  // 2) Adjust its position so it remains visually consistent
-  target.x -= draggedCollection.x;
-  target.y -= draggedCollection.y;
-
-  // 3) Add the target inside the dragged collection
-  draggedCollection.addNode(target);
-}
-
-/**
- * Wraps both dragged and target nodes in a newly created collection.
- * @param dragged - The node that was being dragged.
- * @param target - The node on which the dragged node was dropped.
- * @param parentCollection - The parent collection that currently holds both nodes.
- */
-private wrapNodesInNewCollection(
-  dragged: NodeStore,
-  target: NodeStore,
-  parentCollection: NodeCollectionStore
-) {
-  // 1) Remove both nodes from the parent
-  parentCollection.removeNode(dragged);
-  parentCollection.removeNode(target);
-
-  // 2) Create a new collection to contain them
-  const newCollection = new NodeCollectionStore({
-    type: StoreType.Collection,
-    x: target.x,
-    y: target.y,
-    width: target.width,
-    height: target.height,
-    title: "Merged Collection (resize to view)",
-  });
-
-  // 3) Adjust each node’s position relative to the new collection’s origin
-  dragged.x -= newCollection.x;
-  dragged.y -= newCollection.y;
-  target.x -= newCollection.x;
-  target.y -= newCollection.y;
-
-  // 4) Add both nodes into the new collection
-  newCollection.addNode(target);
-  newCollection.addNode(dragged);
-
-  // 5) Finally, add this new collection to the parent collection
-  parentCollection.addNode(newCollection);
-}
 
   // ---------------------------
   // Mouse/Pointer Handlers

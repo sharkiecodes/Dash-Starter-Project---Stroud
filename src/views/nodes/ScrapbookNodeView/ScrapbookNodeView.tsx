@@ -83,6 +83,6 @@ export class ScrapbookNodeView extends React.Component<BaseNodeProps<ScrapbookNo
   }
 }
 }
-/*edge case note: scrapbooks can't be used meaningfully in CompositeNodes, otherwise they won't be able
+/*edge case note: Incomplete scrapbooks can't be used meaningfully in CompositeNodes, otherwise they won't be able
 to recognize the receipt of new nodes from drag-and-drop, as it is now raw content inside the composite node.
 */

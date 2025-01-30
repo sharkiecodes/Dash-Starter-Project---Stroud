@@ -1,8 +1,8 @@
 import { observer } from "mobx-react";
 import * as React from 'react';
-import { NodeStore } from "../../../stores";
+import { NodeStore } from "../../../../stores";
 import "./ResizeHandle.scss";
-import { MINIMUM_NODE_HEIGHT, MINIMUM_NODE_WIDTH } from "../../../Constants";
+import { MINIMUM_NODE_HEIGHT, MINIMUM_NODE_WIDTH } from "../../../..//Constants";
 
 interface ResizeHandleProps {
     store: NodeStore;
