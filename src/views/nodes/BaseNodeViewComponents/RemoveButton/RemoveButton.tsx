@@ -1,7 +1,7 @@
 import React from "react";
 import "./RemoveButton.scss";
-import { REMOVE_BTN_SYMBOL } from "../../Constants";
-import { NodeStore, NodeCollectionStore } from "../../stores";
+import { REMOVE_BTN_SYMBOL } from "../../../../Constants";
+import { NodeStore, NodeCollectionStore } from "../../../../stores";
 
 /**Defines the props interface for a RemoveButton
  * 

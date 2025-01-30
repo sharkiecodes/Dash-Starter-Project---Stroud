@@ -2,7 +2,7 @@ Overview:
 I implemented the Starter Project, a subset of Dash's features
 Thank you very much for the opportunity to try out for the Dash Research Team!
 
-Bells and Whistles:
+Bells and Whistles
 **************************************************************************************************************
 Four different views available:
 -Freeform
@@ -10,17 +10,17 @@ Four different views available:
 -Grid
 -Tree
 "Following Links" has different results in GridView vs FreeFormCanvas: 
-Following links in FreeFormCanvas causes the canvas as panning to center on the node.
+Following links in FreeFormCanvas causes the canvas to pan to center on the node.
 Following links in Grid View causes linked nodes to be highlighted
 (involves conditionally changing the className of a div to allow a different scss ruleset to apply)
 
 Nodes can be dragged and dropped onto each other. Dragging and dropping two non-collection nodes
 together creates a new collection where they are merged. Dragging and dropping a node
-onto a collection adds it to that collection.
+onto an existing collection adds it to that collection.
 
 Please press and hold the SHIFT key when dragging two nodes together to create a CompositeNode.
-The concept behind a CompositeNode is based on two principles:
-1. You may want to combine two or more nodes without creating an entire new subcollection
+The concept behind a CompositeNode is based on two concepts:
+1. Cmbine two or more nodes without creating an entire new subcollection
 2. Having a way to arrange multiple nodes' stripped content together inside a single BaseNodeFrame.
 
 By combining two NodeStores and rendering their stripped-down views (which don't include the clutter of their individual
@@ -31,7 +31,8 @@ I further enhanced the CompositeNode idea to include Scrapbooks--preset template
 nodes which can take in one website, one video, etc. and format in a designated way. As it stands,
 the current Scrapbook is set up to take one website and one video. An extension of this project could 
 be to add more layout formats for scrapbooks.
-Visual arrows are developed using the react-xarrows library, 
+
+Visual arrows were developed using the react-xarrows library, 
 
 Adaptive Add Node Form:
 When I was creating the Add Node Form, I realized that each field defined in a node's store
@@ -45,7 +46,7 @@ Through this implementation, it can simply run through a fieldDefinitions array 
 
 Mouse Trail:
 Renders a mouse trail that activates when the user pans.
-This is useful for identifying
+This is useful for visually identifying when the canvas is being dragged.
 
 ***********************************************************************************
 
@@ -71,44 +72,29 @@ through an isContentOnly prop.
 
 NodeRenderer is a single component to return a NodeView for any node type. This ensures we only maintain one switch,
 rather than having to repeat the logic for node instantiation.
+***********************
 
-
-
-In general,
-
-
-Misc. Notes
+Misc. Design Notes:
 Staggered Grid view is actually an algorithm in FreeFormCanvas, while GridView relies on .scss rulesets instead.
 
-Special Focuses:
-Pointer Events
-Stop propagation in several edge cases.
-For example: Rich Text Editor
+Pointer Events:
+It was necessary to stop propagation in several edge cases.
+For example: in the Rich Text Editor, stop propagation allows you to click
+on the various options within the Quill toolbar as well as edit/type text
 
-Often, e.stopPropagation was
-Necessary to prevent the canvas from panning. Otherwise, for example, it interprets the selection of a different node type
-as the mouse continuously being down / pressing or highlighting that box.
+Often, e.stopPropagation was necessary to prevent the canvas from panning. Otherwise, 
+for example, it interprets the selection of a different node type as the mouse continuously being down / 
+pressing or highlighting that box.
 
-
-
-Hours: Took a significant amount of time, likely 130+
-
-
-General Coding Commentary:
+Minor Coding Syntax Commentary:
 I consistently used destructuring lines such as
-{ store, collection } = this.props
+{ store, collection } = this.props for easy reference
 TypeScript looks at the props object and extracts the store, and collection properties, creating two new variables store, and collection.
 
 
-
-
-
-
-      SCrapbook return <div>Unsupported node type {node.type}</div>;
-      */
+Hours: Took a significant amount of time, likely 130+ hours
 
  
 Closing Notes:
-Thank you very much for the opportunity to try out for the Dash Research Team! I would love to join!
-I can elaborate further on reasoning behind design choices.     
+Thank you very much for considering me for the Dash Research Team! I would love to join!
 

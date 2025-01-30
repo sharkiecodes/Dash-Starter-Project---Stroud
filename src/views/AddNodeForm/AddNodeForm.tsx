@@ -1,12 +1,12 @@
 // AddNodeModal.tsx
 import * as React from "react";
 import { observable } from "mobx";
-import { NodeStore } from "../../../stores";
-import { StoreType } from "../../../stores";
-import { FieldDefinition } from "../../../stores/FieldDefinition";
-import { NodeConstructors } from "../../../stores/NodeConstructors";
+import { NodeStore } from "../../stores";
+import { StoreType } from "../../stores";
+import { FieldDefinition } from "../../stores/FieldDefinition";
+import { NodeConstructors } from "../../stores/NodeConstructors";
 import './AddNodeForm.scss';
-import { DEFAULT_NODE_HEIGHT, DEFAULT_NODE_WIDTH } from "../../../Constants";
+import { DEFAULT_NODE_HEIGHT, DEFAULT_NODE_WIDTH } from "../../Constants";
 import { observer } from "mobx-react";
 
 
@@ -53,12 +53,12 @@ export class AddNodeModal extends React.Component<AddNodeModalProps> {
 
 
   }
-
+  /**Handles a change in a form*/
   handleChange = (fieldName: string, value: any) => {
     this.formData[fieldName] = value;
     // Update for that specific field
     }
-
+  /**Creates a new node and adds to parent collection through the onAdd callback*/
   handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Build a new instance of the node using the formData
@@ -122,8 +122,7 @@ export class AddNodeModal extends React.Component<AddNodeModalProps> {
      onPointerDown = (e: React.PointerEvent) => {
         e.stopPropagation();
         /**Necessary to stop propagation, otherwise the freeform canvas could interpret
-         * the click as an attempt to pan, and would consider the pointer to be down.
-         CHECK U DONT REPEAT THIS TOO MUCH... CONSIDER UTILS*/
+         * the click as an attempt to pan, and would consider the pointer to be down.*/
 
          /**
           * This bars clicking other buttons, dragging nodes,

@@ -1,12 +1,10 @@
 import { observer } from "mobx-react";
 import * as React from 'react';
 import { NodeCollectionStore, MouseTrailStore } from "../../../stores";
-import { FreeFormCanvas } from "../../CanvasViews/FreeFormCanvas/FreeFormCanvas";
+import { FreeFormCanvas, GridCanvas, TreeCanvas } from "../../CanvasViews/";
 import { LayoutMode } from "../../../stores/NodeCollectionStore";
 import "./../NodeView.scss";
-import "./CollectionNodeView.scss"; //Import scss after NodeView to ensure CollectionNodeView's scss stylings take precedence
-import { GridCanvas } from "../../CanvasViews/GridView/GridCanvas";
-import { TreeCanvas } from "../../CanvasViews/TreeView/TreeCanvas/TreeCanvas"; 
+import "./CollectionNodeView.scss"; //Import scss after NodeView to ensure CollectionNodeView's scss stylings take precedence 
 import { BaseNodeProps } from "../BaseNodeFrame/BaseNodeProps";
 import { BaseNodeFrame } from "../BaseNodeFrame/BaseNodeFrame";
 import { AddNodeToolbar } from "../../AddNodeToolbar/AddNodeToolbar";

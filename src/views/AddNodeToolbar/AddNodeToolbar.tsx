@@ -2,7 +2,7 @@ import { observable } from "mobx";
 import { observer } from "mobx-react";
 import * as React from "react";
 import { StoreType } from "../../stores";
-import { AddNodeModal } from "../nodes/AddNodeForm/AddNodeForm";
+import { AddNodeModal } from "../AddNodeForm/AddNodeForm";
 import { NodeStore, NodeCollectionStore } from "../../stores";
 import { RANDOM_LOCATION_FACTOR } from "../../Constants";
 import "./AddNodeToolbar.scss";
@@ -96,7 +96,7 @@ export class AddNodeToolbar extends React.Component<AddNodeToolbarProps> {
         /*The new node type is an enum of store types, which can also be referred to by numbers*/
 
       };
-          
+
       /**Called after the user fills in the form and clicks "Create"*/
       handleAddNode = (newNode: NodeStore) => {
 

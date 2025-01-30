@@ -1,9 +1,9 @@
 // LinkPanel.tsx
 import * as React from "react";
 import "./LinkPanel.scss";
-import { NodeStore, NodeCollectionStore } from "../../../stores";
+import { NodeStore, NodeCollectionStore } from "../../../../stores";
 import { observer } from "mobx-react";
-import { StoreType } from "../../../stores";
+import { StoreType } from "../../../../stores";
 import { observable } from "mobx";
 interface LinkPanelProps {
   node: NodeStore;                  // the node for which we're displaying links

@@ -1,12 +1,9 @@
 // BaseNodeFrame.tsx
 import * as React from "react";
 import { NodeStore } from "../../../stores";
-import { TopBar } from "../TopBar";
-import { RemoveButton } from "../../RemoveButton";
-import { ResizeHandle } from "../ResizeHandle";
-import { LinkPanel } from "../LinkPanel";
+import { TopBar, RemoveButton, ResizeHandle, LinkPanel } from ".././BaseNodeViewComponents";
 import { BaseNodeProps } from "./BaseNodeProps";
-import "./../NodeView.scss"; //??
+import "./../NodeView.scss";
 
 interface BaseNodeFrameProps extends BaseNodeProps<NodeStore> {
   children?: React.ReactNode; // the unique content
